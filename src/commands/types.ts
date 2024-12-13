@@ -11,7 +11,9 @@ enum Commands {
   BLOG = "blog",
   REGISTER = "register",
   LOGIN = "login",
+  LOGOUT = "logout",
   MESSAGE = "message",
+  WHOAMI = "whoami",
 }
 
 export default Commands;
