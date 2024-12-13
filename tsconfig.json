@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "allowJs": true,
+    "baseUrl": ".", // The base directory for resolving paths
+    "paths": {
+      "@/*": [
+        "src/*"
+      ] // Map '@' to the 'src' folder
+    }
+  },
+  "moduleResolution": "node",
+  "include": [
+    "src"
+  ], // Include the source files
+  "exclude": [
+    "node_modules",
+    "dist"
+  ], // Exclude unnecessary files
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
+}
