@@ -13,3 +13,7 @@
   border-color: transparent;
   cursor: pointer;
 }
+
+li {
+  text-align: left;
+}
