@@ -15,8 +15,8 @@ rm -rf "$new_release_dir"/node_modules
 ln -nfs "$app_dir"/node_modules "$new_release_dir"/node_modules
 
 echo 'Linking Assets'
-rm -rf "$new_release_dir"/assets
-ln -nfs "$app_dir"/assets "$new_release_dir"/assets
+rm -rf "$new_release_dir"/src/assets
+ln -nfs "$app_dir"/src/assets "$new_release_dir"/src/assets
 
 echo 'Unlinking previous release'
 unlink "$output_dir"/current
