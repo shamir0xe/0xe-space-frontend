@@ -2,7 +2,7 @@ import TypeSetterMediator from "@/mediators/TypeSetterMediator";
 import contents from "./contents";
 import classes from "./helpCMD.module.css";
 
-const HelpCMD = (...args: string[]) => {
+const HelpCMD = (...args: string[]): JSX.Element => {
   console.log(args);
   const commandList = () => {
     return contents.commands.map((command, index) => {

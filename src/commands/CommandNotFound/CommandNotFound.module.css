@@ -6,10 +6,11 @@
   padding-left: 50px;
 }
 
-.Command {
+.Link {
   background-color: var(--code-color);
   color: var(--background-color);
   border-radius: 5px;
   border-color: transparent;
   cursor: pointer;
+  padding: 0 5px;
 }
