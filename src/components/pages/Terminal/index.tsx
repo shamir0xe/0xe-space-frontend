@@ -1,7 +1,13 @@
 import classes from "./terminal.module.css";
+import React from "react";
 import { appendConditionalClass } from "@/helpers/utils";
 
-const CommandResponse = (props) => {
+type CommandResponseType = {
+  command: string;
+  response: JSX.Element;
+};
+
+const CommandResponse = (props: CommandResponseType) => {
   return (
     <div>
       <div className={classes.Terminal}>
@@ -15,7 +21,17 @@ const CommandResponse = (props) => {
   );
 };
 
-const Terminal = (props) => {
+type TerminalResponseType = {
+  commands: string[];
+  responses: JSX.Element[];
+  containerRef: React.RefObject<HTMLElement>;
+  terminal: React.RefObject<HTMLDivElement>;
+  cursor: React.RefObject<HTMLDivElement>;
+  showLeading: boolean;
+  cursorStatus: boolean;
+};
+
+const Terminal = (props: TerminalResponseType) => {
   const renderHistory = () => {
     return props.commands.map((command, index) => (
       <CommandResponse
@@ -29,7 +45,9 @@ const Terminal = (props) => {
     <section className={classes.Section} ref={props.containerRef}>
       {renderHistory()}
       <div className={classes.Terminal}>
-        <div className={classes.Leading}>&gt;&nbsp;</div>
+        <div className={props.showLeading ? classes.Leading : "hidden"}>
+          &gt;&nbsp;
+        </div>
         <div className={classes.Wrapper}>
           <div className={classes.CurrentLine} ref={props.terminal} />
           <div
