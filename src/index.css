@@ -1,6 +1,9 @@
 @import "open-props/open-props.min.css";
 @import "open-props/src/props.masks.edges.css";
 @import "open-props/masks.edges.min.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 body {
   margin: 0;
