@@ -3,7 +3,7 @@ import CookiesFacade from "@/facades/cookiesFacade";
 import User from "@/models/user";
 
 const LogoutCMD = (
-  setUser: React.Dispatch<React.SetStateAction<User>>,
+  setUser: (user: User) => void,
   ...args: string[]
 ): JSX.Element => {
   console.log(args);

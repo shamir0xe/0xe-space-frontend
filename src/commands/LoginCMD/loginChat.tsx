@@ -11,13 +11,13 @@ export enum ChatStates {
 }
 
 export class LoginChat {
-  setUser: React.Dispatch<React.SetStateAction<User>>;
+  setUser: (user: User) => void;
   state: number = ChatStates.NOT_STARTED;
   username: string | null = null;
   password: string | null = null;
   history: JSX.Element[] = [<div>Enter Username:</div>];
 
-  constructor(setUser: React.Dispatch<React.SetStateAction<User>>) {
+  constructor(setUser: (user: User) => void) {
     this.setUser = setUser;
   }
 

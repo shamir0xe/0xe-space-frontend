@@ -11,7 +11,7 @@ import User from "@/models/user";
 
 type userPropertyType = {
   getUser: () => User;
-  setUser: React.Dispatch<React.SetStateAction<User>>;
+  setUser: (user: User) => void;
 };
 const CommandMediator = (
   command: string,

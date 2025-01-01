@@ -3,7 +3,7 @@ import CookiesFacade from "@/facades/cookiesFacade";
 import User from "@/models/user";
 
 const postLoginProcess = async (
-  setUser: React.Dispatch<React.SetStateAction<User>>,
+  setUser: (user: User) => void,
   token: string | null = null,
 ) => {
   /**

@@ -2,7 +2,7 @@ import User from "@/models/user";
 import { LoginChat } from "./loginChat";
 
 const LoginCMD = (
-  setUser: React.Dispatch<React.SetStateAction<User>>,
+  setUser: (user: User) => void,
   ...args: string[]
 ): [JSX.Element, LoginChat] => {
   console.log(args);
