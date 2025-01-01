@@ -5,7 +5,6 @@ const viTerminal = (params) => {
 	const {
 		ref,
 		cursorRef,
-		user,
 		onClick = () => {},
 		onModeChange = () => {},
 		onLineEnd = () => {},

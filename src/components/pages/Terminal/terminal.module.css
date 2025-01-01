@@ -28,6 +28,7 @@
 .Leading {
 	display: table-cell;
 	width: 3ch;
+	min-width: 3ch;
 	vertical-align: bottom;
 }
 

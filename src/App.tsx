@@ -33,7 +33,6 @@ const App = () => {
 			ref: terminalRef,
 			cursorRef: cursorRef,
 			onClick: delayAnimation,
-			user: user,
 			onLineEnd: (command: string) => {
 				if (chat.current == null) {
 					console.log(`command: ${command}`);
@@ -98,6 +97,7 @@ const App = () => {
 	return (
 		<div className={classes.Canvas}>
 			<Terminal
+				user={user}
 				showLeading={showLeading}
 				containerRef={containerRef}
 				terminal={terminalRef}

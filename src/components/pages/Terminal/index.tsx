@@ -1,5 +1,6 @@
 import classes from "./terminal.module.css";
 import React from "react";
+import User from "@/models/user";
 import { appendConditionalClass } from "@/helpers/utils";
 
 type CommandResponseType = {
@@ -22,6 +23,7 @@ const CommandResponse = (props: CommandResponseType) => {
 };
 
 type TerminalResponseType = {
+  user: User;
   commands: string[];
   responses: JSX.Element[];
   containerRef: React.RefObject<HTMLElement>;
@@ -45,6 +47,14 @@ const Terminal = (props: TerminalResponseType) => {
     <section className={classes.Section} ref={props.containerRef}>
       {renderHistory()}
       <div className={classes.Terminal}>
+        <div
+          className={
+            props.showLeading ? "table-cell align-bottom w-1 pr-1" : "hidden"
+          }
+        >
+          @{props.user.username}
+          {""}
+        </div>
         <div className={props.showLeading ? classes.Leading : "hidden"}>
           &gt;&nbsp;
         </div>
