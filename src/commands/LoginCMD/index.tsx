@@ -1,9 +1,11 @@
-import { useAuth } from "@/components/AuthContext";
+import User from "@/models/user";
 import { LoginChat } from "./loginChat";
 
-const LoginCMD = (...args: string[]): [JSX.Element, LoginChat] => {
+const LoginCMD = (
+  setUser: React.Dispatch<React.SetStateAction<User>>,
+  ...args: string[]
+): [JSX.Element, LoginChat] => {
   console.log(args);
-  const { setUser } = useAuth();
   const loginChat = new LoginChat(setUser);
   return [loginChat.renderHistory(), loginChat];
 };

@@ -2,7 +2,7 @@ import createGuestUser from "@/actions/user/createGuestUser";
 import User from "@/models/user";
 import { createContext, ReactNode, useContext, useState } from "react";
 
-interface AuthContextType {
+export interface AuthContextType {
   user: User;
   setUser: React.Dispatch<React.SetStateAction<User>>;
 }

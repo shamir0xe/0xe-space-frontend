@@ -19,7 +19,7 @@ const App = () => {
   const [responses, setResponses] = useState<JSX.Element[]>([]);
   const [showLeading, setShowLeading] = useState<boolean>(true);
   const chat = useRef<LoginChat | null>(null);
-  const { setUser } = useAuth();
+  const { user, setUser } = useAuth();
 
   useEffect(() => {
     let animationTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -35,7 +35,10 @@ const App = () => {
       onLineEnd: (command: string) => {
         if (chat.current == null) {
           console.log(`command: ${command}`);
-          const [cmd, response, interactiveChat] = CommandMediator(command);
+          const [cmd, response, interactiveChat] = CommandMediator(command, {
+            user,
+            setUser,
+          });
           console.log(`cmd: ${cmd}`);
           if (interactiveChat) {
             console.log("Enter the chat mode");
