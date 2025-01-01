@@ -12,6 +12,8 @@
   border-radius: 5px;
   border-color: transparent;
   cursor: pointer;
+  margin: 2.5px 0;
+  padding: 0 2.5px;
 }
 
 li {

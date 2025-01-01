@@ -6,15 +6,27 @@ const contents = {
   commands: [
     {
       name: "help",
-      description: "shows this help",
+      description: "Shows this help",
     },
     {
       name: "ls",
-      description: "shows this help",
+      description: "Shows this help",
     },
     {
       name: "clear",
-      description: "clears the screen",
+      description: "Clears the screen",
+    },
+    {
+      name: "login",
+      description: "Login",
+    },
+    {
+      name: "logout",
+      description: "Logout",
+    },
+    {
+      name: "whoami",
+      description: "Outputs who actually u are",
     },
   ],
 };

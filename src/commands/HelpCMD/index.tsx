@@ -24,7 +24,7 @@ const HelpCMD = (...args: string[]): JSX.Element => {
   };
   return (
     <div className={classes.Container}>
-      <h1>
+      <h1 className="text-left">
         Welcome to <span className={classes.Italic}>0xe's Space</span>
       </h1>
       <p>{contents.txts.body}</p>
