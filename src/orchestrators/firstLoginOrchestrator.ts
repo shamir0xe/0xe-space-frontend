@@ -6,7 +6,7 @@ const firstLoginOrchestrator = async (
 	setUser: React.Dispatch<React.SetStateAction<User>>,
 ) => {
 	/**
-	 * Read cookies for retrieveing the user
+	 * Read cookies for retrieving the user
 	 * if the cookie have been found, try to
 	 * login using that token
 	 * **/
@@ -14,12 +14,14 @@ const firstLoginOrchestrator = async (
 		return;
 	}
 	// We have a token
+	console.log(`Stored token: ${AuthContext.readToken()}`);
 	APICall.userInfo()
 		.then((user) => {
+			console.log(`We already have a user: ${user.username}`);
 			setUser(user);
 		})
 		.catch((error) => {
-			console.log(`error occured while try to login the user: ${error}`);
+			console.log(`error occurred while try to login the user: ${error}`);
 		});
 };
 

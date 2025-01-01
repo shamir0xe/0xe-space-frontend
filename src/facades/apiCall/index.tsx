@@ -5,10 +5,23 @@ class APICall {
 	static baseURL: string = `http://127.0.0.1:8000/api/v0.0.1`;
 
 	static async userInfo(): Promise<User> {
-		let userInfo = {} as User;
 		try {
-		} catch (error: any) {}
-		return userInfo;
+			let url = `${this.baseURL}/user/info`;
+			const response = await fetch(url, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${AuthContext.readToken()}`,
+				},
+			});
+			if (!response.ok) {
+				throw new Error(`Error: ${response.statusText}`);
+			}
+			let user = (await response.json()) as User;
+			return Promise.resolve(user);
+		} catch (error: any) {
+			return Promise.reject(error);
+		}
 	}
 
 	static async login(

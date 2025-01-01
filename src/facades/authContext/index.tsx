@@ -2,6 +2,9 @@ import Cookies from "js-cookie";
 
 class AuthContext {
 	static saveToken(token: string): void {
+		if (token.length && token[0] == '"') {
+			token = token.slice(1, -1);
+		}
 		Cookies.set("token", token, { expires: 1 });
 	}
 	static removeToken(): void {
