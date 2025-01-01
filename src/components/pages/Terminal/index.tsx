@@ -1,5 +1,5 @@
 import classes from "./terminal.module.css";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import User from "@/models/user";
 import { appendConditionalClass } from "@/helpers/utils";
 
@@ -34,6 +34,11 @@ type TerminalResponseType = {
 };
 
 const Terminal = (props: TerminalResponseType) => {
+  const [usernameWidth, setUsernameWidth] = useState<string>("w-[5ch]");
+
+  useEffect(() => {
+    setUsernameWidth(`w-[${props.user.username.length}ch]`);
+  }, [props.user]);
   const renderHistory = () => {
     return props.commands.map((command, index) => (
       <CommandResponse
@@ -46,16 +51,25 @@ const Terminal = (props: TerminalResponseType) => {
   return (
     <section className={classes.Section} ref={props.containerRef}>
       {renderHistory()}
-      <div className={classes.Terminal}>
+      <div className="h-[50px] table table-fixed border-collapse">
         <div
-          className={
-            props.showLeading ? "table-cell align-bottom w-1 pr-1" : "hidden"
-          }
+          className={[
+            props.showLeading
+              ? "relative table-cell h-full align-bottom pr-1 whitespace-nowrap"
+              : "hidden",
+            usernameWidth,
+          ].join(" ")}
         >
           @{props.user.username}
           {""}
         </div>
-        <div className={props.showLeading ? classes.Leading : "hidden"}>
+        <div
+          className={
+            props.showLeading
+              ? "table-cell h-full align-bottom w-[2ch]"
+              : "hidden"
+          }
+        >
           &gt;&nbsp;
         </div>
         <div className={classes.Wrapper}>

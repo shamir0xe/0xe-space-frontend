@@ -17,6 +17,7 @@
 	height: 50px;
 	/* background-color: brown; */
 	display: table;
+	table-layout: fixed;
 }
 
 .CurrentLine {
