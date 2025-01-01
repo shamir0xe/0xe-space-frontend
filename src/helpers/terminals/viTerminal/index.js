@@ -5,6 +5,7 @@ const viTerminal = (params) => {
   const {
     ref,
     cursorRef,
+    getFocus = () => { },
     onClick = () => { },
     onModeChange = () => { },
     onLineEnd = () => { },
@@ -41,6 +42,7 @@ const viTerminal = (params) => {
     internalMode = InternalModes.NORMAL;
   };
   const onKeyPress = (e) => {
+    if (!getFocus()) return;
     onClick(e);
     // console.log(e);
     // console.log(line);

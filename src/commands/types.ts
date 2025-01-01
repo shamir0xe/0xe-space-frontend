@@ -14,6 +14,7 @@ enum Commands {
   LOGOUT = "logout",
   MESSAGE = "message",
   WHOAMI = "whoami",
+  SET_KEY = "set_key",
 }
 
 export default Commands;

@@ -1,5 +1,4 @@
 import classes from "@/app.module.css";
-import { LoginChat } from "@/commands/LoginCMD/loginChat";
 import CommandTypes from "@/commands/types";
 import Terminal from "@/components/pages/Terminal";
 import Console from "@/helpers/terminals/viTerminal";
@@ -9,6 +8,8 @@ import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import postLoginProcess from "./orchestrators/postLoginProcess";
 import { useAuth } from "./components/AuthContext";
+import { Chat } from "./helpers/chat/Chat";
+import { useCursor } from "./components/CursorContext";
 
 const App = () => {
   const terminalRef = useRef(null);
@@ -18,8 +19,9 @@ const App = () => {
   const [commands, setCommands] = useState<string[]>([]);
   const [responses, setResponses] = useState<JSX.Element[]>([]);
   const [showLeading, setShowLeading] = useState<boolean>(true);
-  const chat = useRef<LoginChat | null>(null);
+  const chat = useRef<Chat | null>(null);
   const { user, setUser, getUser } = useAuth();
+  const { focus, getFocus, setFocus } = useCursor();
 
   useEffect(() => {
     let animationTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -32,13 +34,18 @@ const App = () => {
       ref: terminalRef,
       cursorRef: cursorRef,
       onClick: delayAnimation,
+      getFocus: getFocus,
       onLineEnd: (command: string) => {
         if (chat.current == null) {
           console.log(`command: ${command}`);
-          const [cmd, response, interactiveChat] = CommandMediator(command, {
-            getUser,
-            setUser,
-          });
+          const [cmd, response, interactiveChat] = CommandMediator(
+            command,
+            {
+              getUser,
+              setUser,
+            },
+            { getFocus, setFocus },
+          );
           console.log(`cmd: ${cmd}`);
           if (interactiveChat) {
             console.log("Enter the chat mode");
@@ -107,7 +114,7 @@ const App = () => {
         containerRef={containerRef}
         terminal={terminalRef}
         cursor={cursorRef}
-        cursorStatus={animation}
+        cursorStatus={animation && focus}
         commands={commands}
         responses={responses}
       />
