@@ -1,7 +1,7 @@
 import classes from "./terminal.module.css";
 import React, { useEffect, useState } from "react";
-import User from "@/models/user";
 import { appendConditionalClass } from "@/helpers/utils";
+import { useAuth } from "@/components/AuthContext";
 
 type CommandResponseType = {
   command: string;
@@ -23,7 +23,6 @@ const CommandResponse = (props: CommandResponseType) => {
 };
 
 type TerminalResponseType = {
-  user: User;
   commands: string[];
   responses: JSX.Element[];
   containerRef: React.RefObject<HTMLElement>;
@@ -35,10 +34,11 @@ type TerminalResponseType = {
 
 const Terminal = (props: TerminalResponseType) => {
   const [usernameWidth, setUsernameWidth] = useState<string>("w-[5ch]");
+  const { user } = useAuth();
 
   useEffect(() => {
-    setUsernameWidth(`w-[${props.user.username.length}ch]`);
-  }, [props.user]);
+    setUsernameWidth(`w-[${user.username.length}ch]`);
+  }, [user]);
   const renderHistory = () => {
     return props.commands.map((command, index) => (
       <CommandResponse
@@ -60,7 +60,7 @@ const Terminal = (props: TerminalResponseType) => {
             usernameWidth,
           ].join(" ")}
         >
-          @{props.user.username}
+          @{user.username}
           {""}
         </div>
         <div

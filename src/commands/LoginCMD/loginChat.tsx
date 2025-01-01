@@ -1,5 +1,7 @@
-import AuthContext from "@/facades/authContext";
+import CookiesFacade from "@/facades/cookiesFacade";
 import APICall from "@/facades/apiCall";
+import postLoginProcess from "@/orchestrators/postLoginProcess";
+import User from "@/models/user";
 
 export enum ChatStates {
   NOT_STARTED = 0,
@@ -9,10 +11,15 @@ export enum ChatStates {
 }
 
 export class LoginChat {
+  setUser: React.Dispatch<React.SetStateAction<User>>;
   state: number = ChatStates.NOT_STARTED;
   username: string | null = null;
   password: string | null = null;
   history: JSX.Element[] = [<div>Enter Username:</div>];
+
+  constructor(setUser: React.Dispatch<React.SetStateAction<User>>) {
+    this.setUser = setUser;
+  }
 
   isEnded(): boolean {
     return this.state == ChatStates.SUCCESS || this.state == ChatStates.FAILURE;
@@ -61,7 +68,10 @@ export class LoginChat {
         return this.renderHistory();
       }
       this.state = ChatStates.SUCCESS;
-      AuthContext.saveToken(token);
+
+      CookiesFacade.saveToken(token);
+      postLoginProcess(this.setUser, token);
+
       this.history.push(<div>Successfully logged in</div>);
       return this.renderHistory();
     }
