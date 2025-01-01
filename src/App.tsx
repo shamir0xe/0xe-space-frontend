@@ -19,7 +19,7 @@ const App = () => {
   const [responses, setResponses] = useState<JSX.Element[]>([]);
   const [showLeading, setShowLeading] = useState<boolean>(true);
   const chat = useRef<LoginChat | null>(null);
-  const { user, setUser } = useAuth();
+  const { user, setUser, getUser } = useAuth();
 
   useEffect(() => {
     let animationTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -36,7 +36,7 @@ const App = () => {
         if (chat.current == null) {
           console.log(`command: ${command}`);
           const [cmd, response, interactiveChat] = CommandMediator(command, {
-            user,
+            getUser,
             setUser,
           });
           console.log(`cmd: ${cmd}`);
@@ -95,6 +95,10 @@ const App = () => {
       containerRef.current.scroll(0, containerRef.current.scrollHeight);
     }
   }, [responses]);
+
+  useEffect(() => {
+    console.log(`Updated User: ${user.name}`);
+  }, [user]);
 
   return (
     <div className={classes.Canvas}>

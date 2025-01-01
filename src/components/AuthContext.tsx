@@ -1,10 +1,11 @@
 import createGuestUser from "@/actions/user/createGuestUser";
 import User from "@/models/user";
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useRef, useState } from "react";
 
 export interface AuthContextType {
   user: User;
-  setUser: React.Dispatch<React.SetStateAction<User>>;
+  getUser: () => User;
+  setUser: (user: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -14,9 +15,20 @@ type AuthProviderProps = {
 };
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User>(createGuestUser());
+  const randomUser = createGuestUser();
+  const [stateUser, setStateUser] = useState<User>(randomUser);
+  const user = useRef<User>(randomUser);
+  const setUser = (newUser: User): void => {
+    user.current = newUser;
+    setStateUser(newUser);
+  };
+  const getUser = (): User => {
+    return user.current;
+  };
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider
+      value={{ user: stateUser, setUser: setUser, getUser: getUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

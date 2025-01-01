@@ -6,14 +6,19 @@ import CommandTypes from "@/commands/types";
 import LoginCMD from "@/commands/LoginCMD";
 import LogoutCMD from "@/commands/LogoutCMD";
 import { LoginChat } from "@/commands/LoginCMD/loginChat";
-import { AuthContextType } from "@/components/AuthContext";
+import WhoAmICMD from "@/commands/WhoAmICMD";
+import User from "@/models/user";
 
+type userPropertyType = {
+  getUser: () => User;
+  setUser: React.Dispatch<React.SetStateAction<User>>;
+};
 const CommandMediator = (
   command: string,
-  useAuth: AuthContextType,
+  userProperty: userPropertyType,
 ): [string, JSX.Element, LoginChat | null] => {
   const [cmd, args] = commandParser(command);
-  const { user, setUser } = useAuth;
+  const { getUser, setUser } = userProperty;
   if (cmd === "") return [cmd, ResponseTypes.BLANK(), null];
   let output = CommandNotFound(...args);
   let interactiveChat = null;
@@ -23,6 +28,9 @@ const CommandMediator = (
       break;
     case CommandTypes.LOGOUT:
       output = LogoutCMD(setUser, ...args);
+      break;
+    case CommandTypes.WHOAMI:
+      output = WhoAmICMD(getUser(), ...args);
       break;
     case CommandTypes.HELP:
     case CommandTypes.LS:
