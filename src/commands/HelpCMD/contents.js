@@ -5,6 +5,10 @@ const contents = {
   },
   commands: [
     {
+      name: "about_me",
+      description: "Brief information about me",
+    },
+    {
       name: "help",
       description: "Shows this help",
     },

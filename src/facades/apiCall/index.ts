@@ -16,7 +16,12 @@ class APICall {
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
-      return Promise.resolve(response.text());
+
+      let content = await response.text();
+      if (content.length && content[0] == '"') {
+        content = content.slice(1, -1);
+      }
+      return Promise.resolve(content);
     } catch (error: any) {
       return Promise.reject(error);
     }

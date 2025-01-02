@@ -41,7 +41,14 @@ const ValueArea = ({ setGlobalFocus, onChange }: ValueAreaProps) => {
 export class SetKeyChat extends Chat {
   key: string;
   setFocus: (focus: boolean) => void;
-  availableKeys = ["about_me", "mood"];
+  availableKeys = [
+    "about_me",
+    "twitter",
+    "youtube",
+    "topcoder",
+    "codeforces",
+    "github",
+  ];
   value: string = "";
 
   constructor(setFocus: (focus: boolean) => void, key: string) {

@@ -1,5 +1,5 @@
 # Logs
-src/assets/
+# src/assets/
 output
 logs
 *.log

@@ -10,6 +10,13 @@ import User from "@/models/user";
 import SetKeyCMD from "@/commands/SetKeyCMD";
 import { Chat } from "@/helpers/chat/Chat";
 import AboutMeCMD from "@/commands/AboutMeCMD";
+import LeetcodeCMD from "@/commands/LeetcodeCMD";
+import TopcoderCMD from "@/commands/TopcoderCMD";
+import SocialsCMD from "@/commands/SocialsCMD";
+import TwitterCMD from "@/commands/TwitterCMD";
+import YoutubeCMD from "@/commands/YoutubeCMD";
+import GithubCMD from "@/commands/GithubCMD";
+import CodeforcesCMD from "@/commands/CodeforcesCMD";
 
 type UserPropertyType = {
   getUser: () => User;
@@ -31,6 +38,27 @@ const CommandMediator = (
   let output = CommandNotFound(...args);
   let interactiveChat: Chat | null = null;
   switch (cmd as CommandTypes) {
+    case CommandTypes.SOCIALS:
+      output = <SocialsCMD />;
+      break;
+    case CommandTypes.LEETCODE:
+      output = <LeetcodeCMD />;
+      break;
+    case CommandTypes.TOPCODER:
+      output = <TopcoderCMD />;
+      break;
+    case CommandTypes.CODEFORCES:
+      output = <CodeforcesCMD />;
+      break;
+    case CommandTypes.GITHUB:
+      output = <GithubCMD />;
+      break;
+    case CommandTypes.YOUTUBE:
+      output = <YoutubeCMD />;
+      break;
+    case CommandTypes.TWITTER:
+      output = <TwitterCMD />;
+      break;
     case CommandTypes.ABOUT_ME:
       output = <AboutMeCMD />;
       break;
