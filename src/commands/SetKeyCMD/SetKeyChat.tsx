@@ -48,6 +48,7 @@ export class SetKeyChat extends Chat {
     "topcoder",
     "codeforces",
     "github",
+    "leetcode",
   ];
   value: string = "";
 
