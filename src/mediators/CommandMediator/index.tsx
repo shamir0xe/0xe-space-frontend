@@ -9,6 +9,7 @@ import WhoAmICMD from "@/commands/WhoAmICMD";
 import User from "@/models/user";
 import SetKeyCMD from "@/commands/SetKeyCMD";
 import { Chat } from "@/helpers/chat/Chat";
+import AboutMeCMD from "@/commands/AboutMeCMD";
 
 type UserPropertyType = {
   getUser: () => User;
@@ -25,11 +26,14 @@ const CommandMediator = (
 ): [string, JSX.Element, Chat | null] => {
   const [cmd, args] = commandParser(command);
   const { getUser, setUser } = userProperty;
-  const { getFocus, setFocus } = cursorProperty;
+  const { setFocus } = cursorProperty;
   if (cmd === "") return [cmd, ResponseTypes.BLANK(), null];
   let output = CommandNotFound(...args);
   let interactiveChat: Chat | null = null;
   switch (cmd as CommandTypes) {
+    case CommandTypes.ABOUT_ME:
+      output = <AboutMeCMD />;
+      break;
     case CommandTypes.SET_KEY:
       [output, interactiveChat] = SetKeyCMD(setFocus, ...args);
       break;

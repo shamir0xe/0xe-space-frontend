@@ -91,7 +91,7 @@ const App = () => {
 
     TypeSetterMediator.initialize(virtualKeyPress);
     // TODO:, remove this
-    setTimeout(() => TypeSetterMediator.enter("help"), 500);
+    setTimeout(() => TypeSetterMediator.enter("about_me"), 500);
     return () => {
       return closure();
     };
