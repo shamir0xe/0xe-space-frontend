@@ -1,14 +1,17 @@
+import APICall from "@/facades/apiCall";
 import { Chat, ChatStates } from "@/helpers/chat/Chat";
 import { useState } from "react";
 
 type ValueAreaProps = {
   setGlobalFocus: (focus: boolean) => void;
+  onChange: (value: string) => void;
 };
-const ValueArea = ({ setGlobalFocus }: ValueAreaProps) => {
+const ValueArea = ({ setGlobalFocus, onChange }: ValueAreaProps) => {
   const [value, setValue] = useState<string>(""); // State to manage textarea value
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setValue(e.target.value); // Update the state with the new value
+    onChange(e.target.value);
   };
 
   const handleFocus = (currentFocus: boolean) => {
@@ -38,23 +41,36 @@ const ValueArea = ({ setGlobalFocus }: ValueAreaProps) => {
 export class SetKeyChat extends Chat {
   key: string;
   setFocus: (focus: boolean) => void;
+  availableKeys = ["about_me", "mood"];
+  value: string = "";
 
   constructor(setFocus: (focus: boolean) => void, key: string) {
     super();
     this.key = key;
     this.setFocus = setFocus;
-    this.history.push(<ValueArea setGlobalFocus={setFocus} />);
+    if (!this.availableKeys.includes(key)) {
+      this.state = ChatStates.FAILURE;
+      this.history.push(<div className="text-left">Invalid Key</div>);
+      return;
+    }
+    this.history.push(
+      <ValueArea
+        setGlobalFocus={setFocus}
+        onChange={(value) => (this.value = value)}
+      />,
+    );
   }
 
-  async recieve(line: string): Promise<JSX.Element> {
-    line = line.trim();
-    console.log(`recieved ${line}`);
-    if (line == "") {
+  async recieve(): Promise<JSX.Element> {
+    console.log(`recieved ${this.value}`);
+    try {
+      await APICall.setKey(this.key, this.value);
       this.history.push(<div>Done</div>);
       this.state = ChatStates.SUCCESS;
-      return this.renderHistory();
+    } catch (error: any) {
+      this.history.push(<div>Failed: {error.toString()}</div>);
+      this.state = ChatStates.FAILURE;
     }
-    this.history.push(<div>{line}</div>);
     return this.renderHistory();
   }
 }

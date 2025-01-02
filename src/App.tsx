@@ -47,7 +47,7 @@ const App = () => {
             { getFocus, setFocus },
           );
           console.log(`cmd: ${cmd}`);
-          if (interactiveChat) {
+          if (interactiveChat && !interactiveChat.isEnded()) {
             console.log("Enter the chat mode");
             chat.current = interactiveChat;
             setShowLeading(false);

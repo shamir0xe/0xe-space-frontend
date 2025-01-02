@@ -4,6 +4,25 @@ import CookiesFacade from "../cookiesFacade";
 class APICall {
   static baseURL: string = `http://127.0.0.1:8000/api/v0.0.1`;
 
+  static async setKey(key: string, value: string): Promise<boolean> {
+    try {
+      let url = `${this.baseURL}/general/set-key?key=${encodeURIComponent(key)}&text=${encodeURIComponent(value)}`;
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${CookiesFacade.readToken()}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+      return Promise.resolve(true);
+    } catch (error: any) {
+      return Promise.reject(error);
+    }
+  }
+
   static async userInfo(): Promise<User> {
     try {
       let url = `${this.baseURL}/user/info`;
