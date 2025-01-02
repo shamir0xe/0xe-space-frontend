@@ -2,7 +2,7 @@ import User from "@/models/user";
 import CookiesFacade from "../cookiesFacade";
 
 class APICall {
-  static baseURL: string = `http://localhost:8000/api/v0.0.1`;
+  static baseURL: string = import.meta.env.VITE_BASE_URL;
 
   static async getKey(key: string): Promise<string> {
     try {
