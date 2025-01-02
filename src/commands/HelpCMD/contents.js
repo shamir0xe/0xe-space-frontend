@@ -5,6 +5,34 @@ const contents = {
   },
   commands: [
     {
+      name: "socials",
+      description: "My social networks list",
+    },
+    {
+      name: "twitter",
+      description: "Twitter",
+    },
+    {
+      name: "youtube",
+      description: "Youtube",
+    },
+    {
+      name: "codeforces",
+      description: "Codeforces",
+    },
+    {
+      name: "leetcode",
+      description: "Leetcode",
+    },
+    {
+      name: "github",
+      description: "Github",
+    },
+    {
+      name: "topcoder",
+      description: "Topcoder",
+    },
+    {
       name: "about_me",
       description: "Brief information about me",
     },
