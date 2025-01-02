@@ -1,0 +1,24 @@
+.markdown-container {
+  line-height: 1.6;
+}
+
+.markdown-container h1 {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.markdown-container h2 {
+  text-align: left;
+  font-size: 1.5rem;
+  padding-top: 3rem;
+  padding-bottom: 1rem;
+}
+
+.markdown-container a {
+  color: blue;
+  text-decoration: underline;
+}
+
+.markdown-container code {
+  text-align: left;
+}
