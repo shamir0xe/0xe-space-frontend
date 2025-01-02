@@ -2,7 +2,7 @@ import User from "@/models/user";
 import CookiesFacade from "../cookiesFacade";
 
 class APICall {
-  static baseURL: string = `http://127.0.0.1:8000/api/v0.0.1`;
+  static baseURL: string = `http://localhost:8000/api/v0.0.1`;
 
   static async getKey(key: string): Promise<string> {
     try {
