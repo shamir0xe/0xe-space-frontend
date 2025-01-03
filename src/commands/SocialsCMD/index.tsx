@@ -11,18 +11,16 @@ type SocialsCMDProps = {
 
 const SocialsCMD = ({ className }: SocialsCMDProps): JSX.Element => {
   return (
-    <div
-      className={`items-left space-x-2 p-4 rounded-md flex flex-row ${className}`}
-    >
-      <div>
-        <LeetcodeCMD />
+    <div className={`items-left p-4 rounded-md flex flex-row ${className}`}>
+      <div className="bg-cyan-900 rounded-l-lg">
         <YoutubeCMD />
         <TwitterCMD />
+        <LeetcodeCMD />
       </div>
-      <div>
+      <div className="bg-cyan-900 rounded-r-lg">
+        <GithubCMD />
         <CodeforcesCMD />
         <TopcoderCMD />
-        <GithubCMD />
       </div>
     </div>
   );

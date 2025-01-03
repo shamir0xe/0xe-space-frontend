@@ -21,7 +21,7 @@ const TwitterCMD = (): JSX.Element => {
         rel="noopener noreferrer"
         className="text-blue-500 font-semibold hover:underline flex items-center"
       >
-        <span className="ml-2">Tweeter</span>
+        <span className="ml-2">Twitter</span>
       </a>
     </div>
   );
