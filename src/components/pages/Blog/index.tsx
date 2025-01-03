@@ -41,7 +41,7 @@ const Blog = (): JSX.Element => {
         );
       });
   }, []);
-  const BlogIntro = (): JSX.Element => {
+  const BlogHeader = (): JSX.Element => {
     return (
       <Header
         className="flex items-center w-full justify-between"
@@ -53,7 +53,7 @@ const Blog = (): JSX.Element => {
           </p>
         </div>
         <div className="z-20 text-sm">
-          Back to &nbsp;
+          Go to &nbsp;
           <Button
             onMouseDown={() => {
               navigate("/");
@@ -90,7 +90,7 @@ const Blog = (): JSX.Element => {
   };
   return (
     <div className="text-white max-w-4xl m-auto">
-      <BlogIntro />
+      <BlogHeader />
       <div className="w-full sm:px-5 px-0">{renderPosts()}</div>
     </div>
   );

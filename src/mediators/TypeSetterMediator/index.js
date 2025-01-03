@@ -12,7 +12,11 @@ const TypeSetterMediator = class {
   static enter = (command) => {
     if (inProcess) return this;
     console.log(`entering this -${command}-`);
-    this.clear().insertMode().string(command);
+    try {
+      this.clear().insertMode().string(command);
+    } catch (error) {
+      console.log(`error occurred: ${error}`);
+    }
   };
 
   static clear = () => {
@@ -38,7 +42,11 @@ const TypeSetterMediator = class {
   };
 
   static press = (key) => {
-    keyPress({ key: key });
+    try {
+      keyPress({ key: key });
+    } catch (error) {
+      console.log(`something bad happened: ${error}`);
+    }
   };
 
   static string = (string) => {

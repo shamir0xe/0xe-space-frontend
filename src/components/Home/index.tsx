@@ -1,4 +1,3 @@
-import classes from "@/app.module.css";
 import CommandTypes from "@/commands/types";
 import Terminal from "@/components/pages/Terminal";
 import Console from "@/helpers/terminals/viTerminal";
@@ -11,6 +10,8 @@ import { useAuth } from "@/components/AuthContext";
 import { Chat } from "@/helpers/chat/Chat";
 import { useCursor } from "@/components/CursorContext";
 import { useNavigate } from "react-router-dom";
+import Header from "../Header";
+import Button from "../Button";
 
 const Home = () => {
   const terminalRef = useRef(null);
@@ -24,6 +25,9 @@ const Home = () => {
   const { user, setUser, getUser } = useAuth();
   const { focus, getFocus, setFocus } = useCursor();
   const navigate = useNavigate();
+  const scrollToBottom = () => {
+    window.scrollTo(0, document.body.scrollHeight);
+  };
 
   useEffect(() => {
     let animationTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -35,7 +39,11 @@ const Home = () => {
     const [closure, virtualKeyPress] = Console({
       ref: terminalRef,
       cursorRef: cursorRef,
-      onClick: delayAnimation,
+      onClick: () => {
+        scrollToBottom();
+
+        delayAnimation();
+      },
       getFocus: getFocus,
       onLineEnd: (command: string) => {
         if (chat.current == null) {
@@ -101,17 +109,42 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scroll(0, containerRef.current.scrollHeight);
-    }
+    scrollToBottom();
   }, [responses]);
 
   useEffect(() => {
     console.log(`Updated User: ${user.name}`);
   }, [user]);
 
+  const TerminalHeader = (): JSX.Element => {
+    return (
+      <Header
+        className="flex items-center w-full justify-between text-white"
+        bgColor="bg-emerald-400"
+      >
+        <div className="flex-initial min-h-12 table z-20">
+          <p className="table-cell align-middle text-left">
+            <strong>&lt;Terminal&gt;</strong>
+          </p>
+        </div>
+        <div className="z-20 text-sm">
+          Go to &nbsp;
+          <Button
+            onMouseDown={() => {
+              navigate("/blog");
+            }}
+            className="px-1 py-1.5 mr-1 bg-teal-800"
+          >
+            Blog
+          </Button>
+        </div>
+      </Header>
+    );
+  };
+
   return (
-    <div className={classes.Canvas}>
+    <div className="relative bg-[--background-color] min-h-screen mx-auto max-w-4xl">
+      <TerminalHeader />
       <Terminal
         showLeading={showLeading}
         containerRef={containerRef}
