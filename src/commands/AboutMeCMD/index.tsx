@@ -2,6 +2,8 @@ import MarkdownCmp from "@/components/MarkdownCmp";
 import APICall from "@/facades/apiCall";
 import { useState } from "react";
 import SocialsCMD from "../SocialsCMD";
+import TypeSetterMediator from "@/mediators/TypeSetterMediator";
+import Button from "@/components/Button";
 
 const AboutMeCMD = (): JSX.Element => {
   const [value, setValue] = useState<string>("");
@@ -17,6 +19,17 @@ const AboutMeCMD = (): JSX.Element => {
     <div>
       <MarkdownCmp content={value} />
       <SocialsCMD className="justify-center" />
+      <div>
+        <p>
+          type or tap{" "}
+          <strong>
+            <Button onMouseDown={() => TypeSetterMediator.enter("help")}>
+              help
+            </Button>
+          </strong>{" "}
+          for more info
+        </p>
+      </div>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import TypeSetterMediator from "@/mediators/TypeSetterMediator";
 import contents from "./contents";
 import classes from "./helpCMD.module.css";
+import Button from "@/components/Button";
 
 const HelpCMD = (...args: string[]): JSX.Element => {
   console.log(args);
@@ -8,15 +9,11 @@ const HelpCMD = (...args: string[]): JSX.Element => {
     return contents.commands.map((command, index) => {
       return (
         <li key={`command${index}}`}>
-          <button
-            className={classes.Command}
-            onMouseDown={(e) => {
-              if (e) e.preventDefault();
-              TypeSetterMediator.enter(command.name);
-            }}
-          >
-            {command.name}
-          </button>
+          <strong>
+            <Button onMouseDown={() => TypeSetterMediator.enter(command.name)}>
+              {command.name}
+            </Button>
+          </strong>
           : {command.description}
         </li>
       );
