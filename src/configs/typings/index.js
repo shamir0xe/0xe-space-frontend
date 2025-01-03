@@ -1,5 +1,5 @@
 const config = {
-  typeDelay: 200
+  typeDelay: 145,
 };
 
 export default config;
