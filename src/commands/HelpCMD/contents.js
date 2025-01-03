@@ -5,6 +5,10 @@ const contents = {
   },
   commands: [
     {
+      name: "blog",
+      description: "Navigate to blog0xe for it's awesome contents :[",
+    },
+    {
       name: "socials",
       description: "My social networks list",
     },
@@ -38,10 +42,6 @@ const contents = {
     },
     {
       name: "help",
-      description: "Shows this help",
-    },
-    {
-      name: "ls",
       description: "Shows this help",
     },
     {

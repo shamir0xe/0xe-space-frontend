@@ -10,18 +10,15 @@ const Button = ({
   className,
 }: ButtonProps): JSX.Element => {
   return (
-    <div
+    <a
       className={`inline cursor-pointer px-5 border rounded border-transparent hover:border-white bg-gray-700 ${className}`}
+      onMouseDown={(e) => {
+        if (e) e.preventDefault();
+        onMouseDown(e);
+      }}
     >
-      <a
-        onMouseDown={(e) => {
-          if (e) e.preventDefault();
-          onMouseDown(e);
-        }}
-      >
-        {children}
-      </a>
-    </div>
+      {children}
+    </a>
   );
 };
 

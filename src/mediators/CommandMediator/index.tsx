@@ -17,6 +17,7 @@ import TwitterCMD from "@/commands/TwitterCMD";
 import YoutubeCMD from "@/commands/YoutubeCMD";
 import GithubCMD from "@/commands/GithubCMD";
 import CodeforcesCMD from "@/commands/CodeforcesCMD";
+import { NavigateFunction } from "react-router-dom";
 
 type UserPropertyType = {
   getUser: () => User;
@@ -28,6 +29,7 @@ type CursorPropertyType = {
 };
 const CommandMediator = (
   command: string,
+  navigate: NavigateFunction,
   userProperty: UserPropertyType,
   cursorProperty: CursorPropertyType,
 ): [string, JSX.Element, Chat | null] => {
@@ -38,6 +40,9 @@ const CommandMediator = (
   let output = CommandNotFound(...args);
   let interactiveChat: Chat | null = null;
   switch (cmd as CommandTypes) {
+    case CommandTypes.BLOG:
+      navigate("/blog");
+      break;
     case CommandTypes.SOCIALS:
       output = <SocialsCMD />;
       break;

@@ -6,7 +6,7 @@ import TopcoderCMD from "../TopcoderCMD";
 import GithubCMD from "../GithubCMD";
 
 type SocialsCMDProps = {
-  className: string;
+  className?: string;
 };
 
 const SocialsCMD = ({ className }: SocialsCMDProps): JSX.Element => {

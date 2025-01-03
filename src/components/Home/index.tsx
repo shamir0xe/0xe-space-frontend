@@ -10,6 +10,7 @@ import postLoginProcess from "@/orchestrators/postLoginProcess";
 import { useAuth } from "@/components/AuthContext";
 import { Chat } from "@/helpers/chat/Chat";
 import { useCursor } from "@/components/CursorContext";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const terminalRef = useRef(null);
@@ -22,6 +23,7 @@ const Home = () => {
   const chat = useRef<Chat | null>(null);
   const { user, setUser, getUser } = useAuth();
   const { focus, getFocus, setFocus } = useCursor();
+  const navigate = useNavigate();
 
   useEffect(() => {
     let animationTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -40,6 +42,7 @@ const Home = () => {
           console.log(`command: ${command}`);
           const [cmd, response, interactiveChat] = CommandMediator(
             command,
+            navigate,
             {
               getUser,
               setUser,
