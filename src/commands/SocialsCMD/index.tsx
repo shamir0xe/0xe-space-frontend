@@ -5,15 +5,25 @@ import CodeforcesCMD from "../CodeforcesCMD";
 import TopcoderCMD from "../TopcoderCMD";
 import GithubCMD from "../GithubCMD";
 
-const SocialsCMD = (): JSX.Element => {
+type SocialsCMDProps = {
+  className: string;
+};
+
+const SocialsCMD = ({ className }: SocialsCMDProps): JSX.Element => {
   return (
-    <div className="items-left space-x-2 p-4 rounded-md">
-      <LeetcodeCMD />
-      <YoutubeCMD />
-      <TwitterCMD />
-      <CodeforcesCMD />
-      <TopcoderCMD />
-      <GithubCMD />
+    <div
+      className={`items-left space-x-2 p-4 rounded-md flex flex-row ${className}`}
+    >
+      <div>
+        <LeetcodeCMD />
+        <YoutubeCMD />
+        <TwitterCMD />
+      </div>
+      <div>
+        <CodeforcesCMD />
+        <TopcoderCMD />
+        <GithubCMD />
+      </div>
     </div>
   );
 };
