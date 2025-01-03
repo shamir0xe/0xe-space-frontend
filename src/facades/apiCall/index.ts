@@ -1,9 +1,54 @@
 import User from "@/models/user";
 import CookiesFacade from "../cookiesFacade";
 import Post from "@/models/post";
+import postDTO from "@/models/dtos/postDTO";
 
 class APICall {
   static baseURL: string = import.meta.env.VITE_BASE_URL;
+
+  static async newPost(post: Post): Promise<Post> {
+    try {
+      let encodedTitle = encodeURIComponent(post.title ?? "");
+      let encodedContent = encodeURIComponent(post.content ?? "");
+      let url = `${this.baseURL}/blog/create?title=${encodedTitle}&content=${encodedContent}`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${CookiesFacade.readToken()}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      return postDTO(await response.json());
+    } catch (error: any) {
+      return Promise.reject(error);
+    }
+  }
+
+  static async editPost(post: Post): Promise<Post> {
+    try {
+      let encodedTitle = encodeURIComponent(post.title ?? "");
+      let encodedContent = encodeURIComponent(post.content ?? "");
+      let url = `${this.baseURL}/blog/update/${post.id}?title=${encodedTitle}&content=${encodedContent}`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${CookiesFacade.readToken()}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      return postDTO(await response.json());
+    } catch (error: any) {
+      return Promise.reject(error);
+    }
+  }
 
   static async getPosts(): Promise<Post[]> {
     try {
@@ -38,14 +83,7 @@ class APICall {
       }
 
       let postData = await response.json();
-      return {
-        id: postData.id,
-        created_at: new Date(postData.created_at),
-        updated_at: new Date(postData.updated_at),
-        content: postData.content,
-        title: postData.title,
-        rating_avg: postData.rating_avg,
-      } as Post;
+      return postDTO(postData);
     } catch (error: any) {
       return Promise.reject(error);
     }

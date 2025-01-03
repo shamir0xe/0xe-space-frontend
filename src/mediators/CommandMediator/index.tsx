@@ -18,6 +18,7 @@ import YoutubeCMD from "@/commands/YoutubeCMD";
 import GithubCMD from "@/commands/GithubCMD";
 import CodeforcesCMD from "@/commands/CodeforcesCMD";
 import { NavigateFunction } from "react-router-dom";
+import PostCMD from "@/commands/PostCMD";
 
 type UserPropertyType = {
   getUser: () => User;
@@ -40,6 +41,9 @@ const CommandMediator = (
   let output = CommandNotFound(...args);
   let interactiveChat: Chat | null = null;
   switch (cmd as CommandTypes) {
+    case CommandTypes.POST:
+      [output, interactiveChat] = PostCMD(setFocus, ...args);
+      break;
     case CommandTypes.BLOG:
       navigate("/blog");
       break;

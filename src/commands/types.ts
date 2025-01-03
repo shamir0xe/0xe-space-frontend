@@ -1,4 +1,5 @@
 enum Commands {
+  POST = "post",
   HELP = "help",
   LS = "ls",
   CLEAR = "clear",

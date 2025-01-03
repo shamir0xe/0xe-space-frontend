@@ -6,6 +6,7 @@ type ValueAreaProps = {
   setGlobalFocus: (focus: boolean) => void;
   onChange: (value: string) => void;
 };
+
 const ValueArea = ({ setGlobalFocus, onChange }: ValueAreaProps) => {
   const [value, setValue] = useState<string>(""); // State to manage textarea value
 
