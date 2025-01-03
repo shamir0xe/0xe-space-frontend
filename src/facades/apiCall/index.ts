@@ -1,8 +1,55 @@
 import User from "@/models/user";
 import CookiesFacade from "../cookiesFacade";
+import Post from "@/models/post";
 
 class APICall {
   static baseURL: string = import.meta.env.VITE_BASE_URL;
+
+  static async getPosts(): Promise<Post[]> {
+    try {
+      let url = `${this.baseURL}/blog/read`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error: any) {
+      return Promise.reject(error);
+    }
+  }
+
+  static async getPost(postId: string): Promise<Post> {
+    try {
+      let url = `${this.baseURL}/blog/read_by_id/${postId}`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      let postData = await response.json();
+      return {
+        id: postData.id,
+        created_at: new Date(postData.created_at),
+        updated_at: new Date(postData.updated_at),
+        content: postData.content,
+        title: postData.title,
+        rating_avg: postData.rating_avg,
+      } as Post;
+    } catch (error: any) {
+      return Promise.reject(error);
+    }
+  }
 
   static async getKey(key: string): Promise<string> {
     try {

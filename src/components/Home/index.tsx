@@ -5,13 +5,13 @@ import Console from "@/helpers/terminals/viTerminal";
 import CommandMediator from "@/mediators/CommandMediator";
 import TypeSetterMediator from "@/mediators/TypeSetterMediator";
 import { useEffect, useRef, useState } from "react";
-import "./App.css";
-import postLoginProcess from "./orchestrators/postLoginProcess";
-import { useAuth } from "./components/AuthContext";
-import { Chat } from "./helpers/chat/Chat";
-import { useCursor } from "./components/CursorContext";
+import "./home.css";
+import postLoginProcess from "@/orchestrators/postLoginProcess";
+import { useAuth } from "@/components/AuthContext";
+import { Chat } from "@/helpers/chat/Chat";
+import { useCursor } from "@/components/CursorContext";
 
-const App = () => {
+const Home = () => {
   const terminalRef = useRef(null);
   const cursorRef = useRef(null);
   const containerRef = useRef<HTMLElement>(null);
@@ -122,4 +122,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default Home;
