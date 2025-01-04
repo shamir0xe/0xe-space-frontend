@@ -5,6 +5,14 @@
     <link rel="icon" type="image/svg+xml" href="/space.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>0xespace.𖥔 🪐˖</title>
+    <script>
+      document.addEventListener("keydown", (event) => {
+        // Prevent default search behavior in Firefox for non-input fields
+        if (!["INPUT", "TEXTAREA"].includes(event.target.tagName)) {
+          event.preventDefault();
+        }
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>
