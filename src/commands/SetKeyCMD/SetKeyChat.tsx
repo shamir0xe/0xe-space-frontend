@@ -1,14 +1,20 @@
 import APICall from "@/facades/apiCall";
 import { Chat, ChatStates } from "@/helpers/chat/Chat";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type ValueAreaProps = {
   setGlobalFocus: (focus: boolean) => void;
   onChange: (value: string) => void;
+  initialize: () => Promise<string>;
 };
 
-const ValueArea = ({ setGlobalFocus, onChange }: ValueAreaProps) => {
+const ValueArea = ({
+  setGlobalFocus,
+  onChange,
+  initialize,
+}: ValueAreaProps) => {
   const [value, setValue] = useState<string>(""); // State to manage textarea value
+  const [editable, setEditable] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setValue(e.target.value); // Update the state with the new value
@@ -24,12 +30,27 @@ const ValueArea = ({ setGlobalFocus, onChange }: ValueAreaProps) => {
     setGlobalFocus(!currentFocus);
   };
 
+  useEffect(() => {
+    initialize()
+      .then((value) => {
+        console.log("got the prev value");
+        setValue(value);
+      })
+      .catch((error: any) => {
+        console.log(`error occurred: ${error}`);
+      })
+      .finally(() => {
+        setEditable(true);
+      });
+  }, []);
+
   return (
     <div className="p-4">
       <textarea
         className="border border-gray-300 p-2 rounded w-full resize-none focus:outline-none focus:ring-2 focus:ring-orange-500 text-stone-950"
         rows={5} // Number of visible rows
         value={value}
+        readOnly={!editable}
         onChange={handleChange}
         placeholder="Type something..."
         onFocus={() => handleFocus(true)} // Triggered when the textarea gains focus
@@ -66,9 +87,19 @@ export class SetKeyChat extends Chat {
     this.history.push(
       <ValueArea
         setGlobalFocus={setFocus}
+        initialize={this.initialize.bind(this)}
         onChange={(value) => (this.value = value)}
       />,
     );
+  }
+
+  async initialize(): Promise<string> {
+    try {
+      this.value = await APICall.getKey(this.key);
+      return Promise.resolve(this.value);
+    } catch (error: any) {
+      return Promise.reject(`error: ${error}`);
+    }
   }
 
   async recieve(): Promise<JSX.Element> {
