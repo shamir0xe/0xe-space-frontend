@@ -7,7 +7,7 @@ const contents = {
     {
       name: "cv",
       options: {
-        pdf: "Download the CV as pdf",
+        pdf: "Downloads the CV as pdf",
         starwars: "tbd :)",
       },
       description: "Shows my CV",
@@ -20,30 +20,30 @@ const contents = {
       name: "socials",
       description: "My social networks list",
     },
-    {
-      name: "twitter",
-      description: "Twitter",
-    },
-    {
-      name: "youtube",
-      description: "Youtube",
-    },
-    {
-      name: "codeforces",
-      description: "Codeforces",
-    },
-    {
-      name: "leetcode",
-      description: "Leetcode",
-    },
-    {
-      name: "github",
-      description: "Github",
-    },
-    {
-      name: "topcoder",
-      description: "Topcoder",
-    },
+    // {
+    //   name: "twitter",
+    //   description: "Twitter",
+    // },
+    // {
+    //   name: "youtube",
+    //   description: "Youtube",
+    // },
+    // {
+    //   name: "codeforces",
+    //   description: "Codeforces",
+    // },
+    // {
+    //   name: "leetcode",
+    //   description: "Leetcode",
+    // },
+    // {
+    //   name: "github",
+    //   description: "Github",
+    // },
+    // {
+    //   name: "topcoder",
+    //   description: "Topcoder",
+    // },
     {
       name: "about_me",
       description: "Brief information about me",
