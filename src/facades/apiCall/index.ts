@@ -102,10 +102,10 @@ class APICall {
         throw new Error(`Error: ${response.statusText}`);
       }
 
-      let content = await response.text();
-      if (content.length && content[0] == '"') {
-        content = content.slice(1, -1);
-      }
+      let content = await response.json();
+      // if (content.length && content[0] == '"') {
+      //   content = content.slice(1, -1);
+      // }
       return Promise.resolve(content);
     } catch (error: any) {
       return Promise.reject(error);
