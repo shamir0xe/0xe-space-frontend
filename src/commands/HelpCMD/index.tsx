@@ -15,6 +15,22 @@ const HelpCMD = (...args: string[]): JSX.Element => {
             </Button>
           </strong>
           : {command.description}
+          {command.options ? (
+            <div className="pb-5">
+              <p className="indent-4 italic text-sm">Available Options:</p>
+              <ul className="list-inside list-disc">
+                {Object.entries(command.options).map(([key, value]) => (
+                  <li className="indent-8" key={`cmd${index}-opt${key}`}>
+                    <p className="inline">
+                      <strong>{key}:</strong> {value}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <div />
+          )}
         </li>
       );
     });
@@ -25,7 +41,7 @@ const HelpCMD = (...args: string[]): JSX.Element => {
         Welcome to <span className={classes.Italic}>0xe's Space</span>
       </h1>
       <p>{contents.txts.body}</p>
-      <p>{contents.txts.commandTitle}</p>
+      <p className="pb-5">{contents.txts.commandTitle}</p>
       <ul>{commandList()}</ul>
     </div>
   );

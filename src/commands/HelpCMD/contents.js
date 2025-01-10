@@ -5,6 +5,14 @@ const contents = {
   },
   commands: [
     {
+      name: "cv",
+      options: {
+        pdf: "Download the CV as pdf",
+        starwars: "tbd :)",
+      },
+      description: "Shows my CV",
+    },
+    {
       name: "blog",
       description: "Navigate to blog0xe for it's awesome contents :[",
     },
