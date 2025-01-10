@@ -19,6 +19,7 @@ import GithubCMD from "@/commands/GithubCMD";
 import CodeforcesCMD from "@/commands/CodeforcesCMD";
 import { NavigateFunction } from "react-router-dom";
 import PostCMD from "@/commands/PostCMD";
+import CvCMD from "@/commands/CvCMD";
 
 type UserPropertyType = {
   getUser: () => User;
@@ -41,6 +42,9 @@ const CommandMediator = (
   let output = CommandNotFound(...args);
   let interactiveChat: Chat | null = null;
   switch (cmd as CommandTypes) {
+    case CommandTypes.CV:
+      output = <CvCMD subCommand={args[0] ?? null} />;
+      break;
     case CommandTypes.POST:
       [output, interactiveChat] = PostCMD(setFocus, ...args);
       break;
