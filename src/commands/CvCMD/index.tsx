@@ -3,6 +3,8 @@ import APICall from "@/facades/apiCall";
 import { useState } from "react";
 import cfg from "@/configs/general";
 import "./index.css";
+import Button from "@/components/Button";
+import TypeSetterMediator from "@/mediators/TypeSetterMediator";
 
 type CvCMDType = {
   subCommand: string | null;
@@ -50,8 +52,16 @@ const CvCMD = ({ subCommand = null }: CvCMDType): JSX.Element => {
         setResumeMD(`## An error occured :( \n ${error}`);
       });
     return (
-      <div className="border-double bg-white text-black rounded-3xl font-sans mt-5 cv-css">
-        <MarkdownCmp content={resumeMD} />
+      <div>
+        <p>
+          <span className="italic">Download the </span>
+          <Button onMouseDown={() => TypeSetterMediator.enter("cv pdf")}>
+            <strong>PDF version</strong>
+          </Button>
+        </p>
+        <div className="border-double bg-white text-black rounded-3xl font-sans mt-5 cv-css">
+          <MarkdownCmp content={resumeMD} />
+        </div>
       </div>
     );
   }
