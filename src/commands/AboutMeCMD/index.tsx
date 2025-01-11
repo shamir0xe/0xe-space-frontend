@@ -27,7 +27,11 @@ const AboutMeCMD = (): JSX.Element => {
               help
             </Button>
           </strong>{" "}
-          for more info
+          for more info, or{" "}
+          <Button onMouseDown={() => TypeSetterMediator.enter("cv")}>
+            <strong>cv</strong>
+          </Button>{" "}
+          for seeing my resume ^^
         </p>
       </div>
     </div>
