@@ -1,0 +1,3 @@
+.blog-post code {
+  @apply border bg-white text-black rounded px-1;
+}

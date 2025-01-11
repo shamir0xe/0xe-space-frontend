@@ -6,6 +6,7 @@ import PostFactory from "@/factories/postFactory";
 import Post from "@/models/post";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./index.css";
 
 const Blog = (): JSX.Element => {
   const [posts, setPosts] = useState<Post[]>([PostFactory.default()]);
@@ -70,7 +71,7 @@ const Blog = (): JSX.Element => {
     return posts.map((post, index) => {
       return (
         <div
-          className="min-h-32 bg-gray-800 sm:my-5 border-transparent sm:rounded-t-[20px]"
+          className="min-h-32 bg-gray-800 sm:my-5 border-transparent sm:rounded-t-[20px] blog-post"
           key={`post#${index}`}
         >
           <div className="p-5">
