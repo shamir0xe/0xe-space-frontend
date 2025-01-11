@@ -6,9 +6,10 @@ import "highlight.js/styles/github.css";
 
 type MarkdownCmpProps = {
   content: string;
+  className?: string;
 };
 
-const MarkdownCmp = ({ content }: MarkdownCmpProps): JSX.Element => {
+const MarkdownCmp = ({ content, className }: MarkdownCmpProps): JSX.Element => {
   const [value, setValue] = useState<string>(content);
 
   useEffect(() => {
@@ -22,7 +23,7 @@ const MarkdownCmp = ({ content }: MarkdownCmpProps): JSX.Element => {
   }, [content]);
 
   return (
-    <div className="markdown-container p-4">
+    <div className={`markdown-container p-4 ${className}`}>
       <Markdown rehypePlugins={[rehypeHighlight]}>{value}</Markdown>
     </div>
   );

@@ -10,8 +10,19 @@
 .markdown-container h2 {
   text-align: left;
   font-size: 1.5rem;
-  padding-top: 3rem;
-  padding-bottom: 1rem;
+  font-weight: bold;
+  padding-bottom: 0.5rem;
+}
+
+.markdown-container h3 {
+  padding-top: 1.5rem;
+  text-align: left;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+hr {
+  margin: 2rem 0;
 }
 
 .markdown-container a {

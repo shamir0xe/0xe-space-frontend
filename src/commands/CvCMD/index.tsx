@@ -2,6 +2,7 @@ import MarkdownCmp from "@/components/MarkdownCmp";
 import APICall from "@/facades/apiCall";
 import { useState } from "react";
 import cfg from "@/configs/general";
+import "./index.css";
 
 type CvCMDType = {
   subCommand: string | null;
@@ -49,7 +50,7 @@ const CvCMD = ({ subCommand = null }: CvCMDType): JSX.Element => {
         setResumeMD(`## An error occured :( \n ${error}`);
       });
     return (
-      <div>
+      <div className="border-double bg-white text-black rounded-3xl font-sans mt-5 cv-css">
         <MarkdownCmp content={resumeMD} />
       </div>
     );

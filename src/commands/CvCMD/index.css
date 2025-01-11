@@ -1,0 +1,19 @@
+.cv-css h3 {
+  @apply text-xl font-semibold indent-8 pb-2;
+}
+
+.cv-css h2 {
+  @apply text-2xl font-bold;
+}
+
+.cv-css h1 {
+  @apply text-4xl font-extrabold pb-4;
+}
+
+.cv-css p {
+  @apply indent-8;
+}
+
+.cv-css ul {
+  @apply indent-16 list-disc list-inside;
+}
