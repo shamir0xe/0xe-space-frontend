@@ -1,5 +1,5 @@
 .cv-css h3 {
-  @apply text-xl font-semibold indent-8 pb-2;
+  @apply text-xl font-semibold indent-4 pb-2;
 }
 
 .cv-css h2 {
@@ -11,9 +11,9 @@
 }
 
 .cv-css p {
-  @apply indent-8;
+  @apply indent-4;
 }
 
 .cv-css ul {
-  @apply indent-16 list-disc list-inside;
+  @apply indent-8 list-disc list-inside;
 }
