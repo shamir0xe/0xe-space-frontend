@@ -102,7 +102,7 @@ const Home = () => {
 
     TypeSetterMediator.initialize(virtualKeyPress);
     // TODO:, remove this
-    setTimeout(() => TypeSetterMediator.enter("about_me"), 500);
+    setTimeout(() => TypeSetterMediator.enter("cv sw"), 500);
     return () => {
       return closure();
     };

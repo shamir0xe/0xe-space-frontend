@@ -1,10 +1,12 @@
 import MarkdownCmp from "@/components/MarkdownCmp";
 import APICall from "@/facades/apiCall";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import cfg from "@/configs/general";
 import "./index.css";
 import Button from "@/components/Button";
 import TypeSetterMediator from "@/mediators/TypeSetterMediator";
+import Markdown from "react-markdown";
+import StarWars from "@/components/StarWars";
 
 type CvCMDType = {
   subCommand: string | null;
@@ -24,6 +26,17 @@ const CvCMD = ({ subCommand = null }: CvCMDType): JSX.Element => {
     document.body.removeChild(link);
   };
 
+  useEffect(() => {
+    APICall.getKey("cv")
+      .then((value) => {
+        setResumeMD(value);
+      })
+      .catch((error: any) => {
+        console.log(error);
+        setResumeMD(`## An error occured :( \n ${error}`);
+      });
+  }, []);
+
   try {
     if (subCommand) {
       if (
@@ -37,20 +50,25 @@ const CvCMD = ({ subCommand = null }: CvCMDType): JSX.Element => {
             The requested CV is start downloading :)
           </div>
         );
+      } else if (
+        subCommand == "starwars" ||
+        subCommand == "sw" ||
+        subCommand == "jedi" ||
+        subCommand == ":{"
+      ) {
+        // TODO: Starwars section
+        return (
+          <div className="w-full h-screen bg-black overflow-hidden">
+            <StarWars title="Resume">
+              <MarkdownCmp content={resumeMD} />
+            </StarWars>
+          </div>
+        );
       } else {
         throw new Error("bad input");
       }
-      //TODO: Add starwars themed CV download
     } else throw new Error("do the default");
   } catch (error) {
-    APICall.getKey("cv")
-      .then((value) => {
-        setResumeMD(value);
-      })
-      .catch((error: any) => {
-        console.log(error);
-        setResumeMD(`## An error occured :( \n ${error}`);
-      });
     return (
       <div>
         <p>
