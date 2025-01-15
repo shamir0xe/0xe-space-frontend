@@ -5,7 +5,6 @@ import cfg from "@/configs/general";
 import "./index.css";
 import Button from "@/components/Button";
 import TypeSetterMediator from "@/mediators/TypeSetterMediator";
-import Markdown from "react-markdown";
 import StarWars from "@/components/StarWars";
 
 type CvCMDType = {

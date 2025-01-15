@@ -1,6 +1,8 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 import "./index.css";
 import cfg from "@/configs/starwars";
+import Button from "../Button";
+import TypeSetterMediator from "@/mediators/TypeSetterMediator";
 
 type StarWarsType = {
   title: string;
@@ -28,9 +30,24 @@ const StarWars = ({ title, children }: StarWarsType): JSX.Element => {
   }, []);
 
   return (
-    <div className="releative sw-wrapper w-full h-full" ref={wrapperRef}>
+    <div className="relative sw-wrapper w-full h-full" ref={wrapperRef}>
       <div className="w-full releative starwars">
         <div className="absolute sw-content">{children}</div>
+      </div>
+      <div className="postfix absolute z-10 top-1/2 -left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <p className="text-center border rounded-xl bg-neutral-900 p-5">
+          type or tap{" "}
+          <strong>
+            <Button onMouseDown={() => TypeSetterMediator.enter("help")}>
+              help
+            </Button>
+          </strong>{" "}
+          for more info, or{" "}
+          <Button onMouseDown={() => TypeSetterMediator.enter("cv")}>
+            <strong>cv</strong>
+          </Button>{" "}
+          for seeing my resume ^^
+        </p>
       </div>
     </div>
   );
