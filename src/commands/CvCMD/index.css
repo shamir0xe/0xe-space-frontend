@@ -20,7 +20,7 @@
 
 .postfix {
   left: -100%;
-  animation: comeFromLeft 2s linear 35s forwards;
+  animation: comeFromLeft 2s linear 30s forwards;
 }
 
 @keyframes comeFromLeft {
