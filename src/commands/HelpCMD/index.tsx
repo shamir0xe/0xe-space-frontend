@@ -1,6 +1,5 @@
 import TypeSetterMediator from "@/mediators/TypeSetterMediator";
 import contents from "./contents";
-import classes from "./helpCMD.module.css";
 import Button from "@/components/Button";
 
 const HelpCMD = (...args: string[]): JSX.Element => {
@@ -36,13 +35,13 @@ const HelpCMD = (...args: string[]): JSX.Element => {
     });
   };
   return (
-    <div className={classes.Container}>
-      <h1 className="text-left">
-        Welcome to <span className={classes.Italic}>0xe's Space</span>
+    <div className="relative px-4">
+      <h1 className="text-left font-extrabold font-xl">
+        Welcome to <span className="italic">0xe's Space</span>
       </h1>
-      <p>{contents.txts.body}</p>
+      <p className="indent-0 text-justify">{contents.txts.body}</p>
       <p className="pb-5">{contents.txts.commandTitle}</p>
-      <ul>{commandList()}</ul>
+      <ul className="text-left">{commandList()}</ul>
     </div>
   );
 };
