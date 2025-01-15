@@ -23,7 +23,7 @@ const MarkdownCmp = ({ content, className }: MarkdownCmpProps): JSX.Element => {
   }, [content]);
 
   return (
-    <div className={`markdown-container p-4 ${className}`}>
+    <div className={`markdown-container p-4 text-left ${className}`}>
       <Markdown rehypePlugins={[rehypeHighlight]}>{value}</Markdown>
     </div>
   );
