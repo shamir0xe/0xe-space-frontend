@@ -1,5 +1,6 @@
 # Logs
 # src/assets/
+src/assets/audios/
 output
 logs
 *.log
