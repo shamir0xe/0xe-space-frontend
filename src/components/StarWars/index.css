@@ -19,21 +19,7 @@
 }
 
 .sw-content {
-  animation: fadeHorizon 33s linear 0s forwards;
-}
-
-.postfix {
-  animation: comeFromLeft 3s linear 25s forwards;
-}
-
-@keyframes comeFromLeft {
-  0% {
-    left: -50%;
-  }
-
-  100% {
-    left: 50%;
-  }
+  animation: fadeHorizon 44s linear 0s forwards;
 }
 
 @keyframes fadeHorizon {
@@ -42,6 +28,6 @@
   }
 
   100% {
-    top: -350%;
+    top: -450%;
   }
 }

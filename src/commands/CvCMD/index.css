@@ -1,5 +1,5 @@
 .cv-css h3 {
-  @apply text-xl font-semibold indent-4 pb-2;
+  @apply text-xl font-semibold indent-2 pb-2;
 }
 
 .cv-css h2 {
@@ -11,9 +11,24 @@
 }
 
 .cv-css p {
-  @apply indent-4;
+  @apply indent-2;
 }
 
 .cv-css ul {
-  @apply indent-8 list-disc list-inside;
+  @apply indent-4 list-disc list-inside;
+}
+
+.postfix {
+  left: -100%;
+  animation: comeFromLeft 2s linear 35s forwards;
+}
+
+@keyframes comeFromLeft {
+  0% {
+    left: -100%;
+  }
+
+  100% {
+    left: 50%;
+  }
 }

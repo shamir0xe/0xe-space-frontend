@@ -19,7 +19,7 @@ const AboutMeCMD = (): JSX.Element => {
     <div>
       <MarkdownCmp content={value} />
       <SocialsCMD className="justify-center" />
-      <div>
+      <div className="p-4">
         <p>
           type or tap{" "}
           <strong>

@@ -1,5 +1,5 @@
 const config = {
-  starsCount: 134,
+  starsCount: 57,
 };
 
 export default config;

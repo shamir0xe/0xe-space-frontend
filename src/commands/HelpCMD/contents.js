@@ -8,7 +8,7 @@ const contents = {
       name: "cv",
       options: {
         pdf: "Downloads the CV as pdf",
-        starwars: "tbd :)",
+        starwars: "Just RUN IT :)",
       },
       description: "Shows my CV",
     },

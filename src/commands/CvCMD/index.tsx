@@ -57,10 +57,26 @@ const CvCMD = ({ subCommand = null }: CvCMDType): JSX.Element => {
       ) {
         // TODO: Starwars section
         return (
-          <div className="w-full h-screen bg-black overflow-hidden">
+          <div className="relative w-full h-screen bg-black overflow-hidden">
             <StarWars title="Resume">
               <MarkdownCmp content={resumeMD} />
             </StarWars>
+            <div className="postfix z-20 w-11/12 md:w-8/12 absolute top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <p className="text-center border rounded-xl bg-neutral-900 p-5 indent-0">
+                type or tap{" "}
+                <strong>
+                  <Button onMouseDown={() => TypeSetterMediator.enter("help")}>
+                    help
+                  </Button>
+                </strong>{" "}
+                for more info, or{" "}
+                <Button onMouseDown={() => TypeSetterMediator.enter("cv")}>
+                  <strong>cv</strong>
+                </Button>{" "}
+                for seeing my resume ^^
+              </p>
+            </div>
+
           </div>
         );
       } else {
