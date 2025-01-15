@@ -42,6 +42,9 @@ const CommandMediator = (
   let output = CommandNotFound(...args);
   let interactiveChat: Chat | null = null;
   switch (cmd as CommandTypes) {
+    case CommandTypes.RELOAD:
+      location.reload();
+      break;
     case CommandTypes.CV:
       output = <CvCMD subCommand={args[0] ?? null} />;
       break;

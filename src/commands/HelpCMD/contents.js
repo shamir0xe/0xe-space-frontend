@@ -53,6 +53,10 @@ const contents = {
       description: "Shows this help",
     },
     {
+      name: "reload",
+      description: "Reloads the page",
+    },
+    {
       name: "clear",
       description: "Clears the screen",
     },
