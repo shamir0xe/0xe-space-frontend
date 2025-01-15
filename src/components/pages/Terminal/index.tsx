@@ -49,7 +49,7 @@ const Terminal = (props: TerminalResponseType) => {
     ));
   };
   return (
-    <section className={classes.Section} ref={props.containerRef}>
+    <section className={`relative my-12 mx-auto w-full sm:w-11/12 ${classes.Section}`} ref={props.containerRef}>
       {renderHistory()}
       <div className="h-[50px] table table-fixed border-collapse">
         <div

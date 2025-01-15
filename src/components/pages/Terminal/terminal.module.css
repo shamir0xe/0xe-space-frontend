@@ -1,7 +1,4 @@
 .Section {
-	position: relative;
-	margin: 48px auto;
-	width: 90%;
 	max-width: calc(100vh * var(--slope));
 	background-color: var(--background-color);
 	color: var(--code-color);
