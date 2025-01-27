@@ -72,6 +72,8 @@ export class SetKeyChat extends Chat {
     "github",
     "leetcode",
     "cv",
+    "email_template_verification_code",
+    "email_template_welcomen"
   ];
   value: string = "";
 
