@@ -1,11 +1,11 @@
-import APICall from "@/facades/apiCall";
+import { GeneralAPI } from "@/facades/apiCall";
 import { useState } from "react";
 import leetcodeLogo from "@/assets/icons/leetcode.svg";
 
 const LeetcodeCMD = (): JSX.Element => {
   const [value, setValue] = useState<string>("");
 
-  APICall.getKey("leetcode")
+  GeneralAPI.getKey("leetcode")
     .then((content: string) => {
       setValue(content);
     })

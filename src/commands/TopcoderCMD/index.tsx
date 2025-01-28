@@ -1,11 +1,11 @@
-import APICall from "@/facades/apiCall";
+import { GeneralAPI } from "@/facades/apiCall";
 import { useState } from "react";
 import topcoderLogo from "@/assets/icons/topcoder.webp";
 
 const TopcoderCMD = (): JSX.Element => {
   const [value, setValue] = useState<string>("");
 
-  APICall.getKey("topcoder")
+  GeneralAPI.getKey("topcoder")
     .then((content: string) => {
       setValue(content);
     })

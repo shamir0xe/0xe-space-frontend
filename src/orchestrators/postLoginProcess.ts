@@ -1,4 +1,4 @@
-import APICall from "@/facades/apiCall";
+import { UserAPI } from "@/facades/apiCall";
 import CookiesFacade from "@/facades/cookiesFacade";
 import User from "@/models/user";
 
@@ -20,7 +20,7 @@ const postLoginProcess = async (
   // We have a token
   console.log(`Stored token: ${token}`);
 
-  APICall.userInfo()
+  UserAPI.userInfo()
     .then((fetchedUser) => {
       console.log(`We already have a user: ${fetchedUser.username}`);
       fetchedUser.token = token;

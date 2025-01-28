@@ -1,4 +1,4 @@
-import APICall from "@/facades/apiCall";
+import { BlogAPI } from "@/facades/apiCall";
 import Post from "@/models/post";
 import { useEffect, useState } from "react";
 
@@ -6,7 +6,7 @@ const PostLS = () => {
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
-    APICall.getPosts().then((posts) => {
+    BlogAPI.getPosts().then((posts) => {
       posts.reverse();
       setPosts(posts);
     });

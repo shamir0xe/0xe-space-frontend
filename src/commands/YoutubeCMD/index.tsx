@@ -1,11 +1,11 @@
-import APICall from "@/facades/apiCall";
+import { GeneralAPI } from "@/facades/apiCall";
 import { useState } from "react";
 import { FaYoutube } from "react-icons/fa";
 
 const YoutubeCMD = (): JSX.Element => {
   const [value, setValue] = useState<string>("");
 
-  APICall.getKey("youtube")
+  GeneralAPI.getKey("youtube")
     .then((content: string) => {
       setValue(content);
     })

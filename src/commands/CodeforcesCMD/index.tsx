@@ -1,11 +1,11 @@
-import APICall from "@/facades/apiCall";
+import { GeneralAPI } from "@/facades/apiCall";
 import { useState } from "react";
 import codeforcesLogo from "@/assets/icons/codeforces.svg";
 
 const CodeforcesCMD = (): JSX.Element => {
   const [value, setValue] = useState<string>("");
 
-  APICall.getKey("codeforces")
+  GeneralAPI.getKey("codeforces")
     .then((content: string) => {
       setValue(content);
     })

@@ -1,4 +1,4 @@
-import APICall from "@/facades/apiCall";
+import { BlogAPI } from "@/facades/apiCall";
 import PostFactory from "@/factories/postFactory";
 import { Chat, ChatStates } from "@/helpers/chat/Chat";
 import { useEffect, useState } from "react";
@@ -141,7 +141,7 @@ export class PostChat extends Chat {
           } as OnChangeType);
         case "edit":
           let id = this.postID ?? "";
-          return APICall.getPost(id).then((postValue) => {
+          return BlogAPI.getPost(id).then((postValue) => {
             console.log(`We got it: ${postValue.title}`);
             this.title = postValue.title ?? "";
             this.content = postValue.content ?? "";
@@ -167,14 +167,14 @@ export class PostChat extends Chat {
         case "new":
           post.title = this.title;
           post.content = this.content;
-          await APICall.newPost(post);
+          await BlogAPI.newPost(post);
           break;
         case "edit":
           post.id = this.postID ?? "";
           post.title = this.title;
           post.content = this.content;
 
-          post = await APICall.editPost(post);
+          post = await BlogAPI.editPost(post);
           console.log(post.title);
           console.log(post.content);
           break;

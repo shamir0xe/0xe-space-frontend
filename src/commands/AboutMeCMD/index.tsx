@@ -1,5 +1,5 @@
 import MarkdownCmp from "@/components/MarkdownCmp";
-import APICall from "@/facades/apiCall";
+import { GeneralAPI } from "@/facades/apiCall";
 import { useState } from "react";
 import SocialsCMD from "../SocialsCMD";
 import TypeSetterMediator from "@/mediators/TypeSetterMediator";
@@ -8,7 +8,7 @@ import Button from "@/components/Button";
 const AboutMeCMD = (): JSX.Element => {
   const [value, setValue] = useState<string>("");
 
-  APICall.getKey("about_me")
+  GeneralAPI.getKey("about_me")
     .then((content: string) => {
       setValue(content);
     })

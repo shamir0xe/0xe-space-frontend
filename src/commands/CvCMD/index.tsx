@@ -1,5 +1,5 @@
 import MarkdownCmp from "@/components/MarkdownCmp";
-import APICall from "@/facades/apiCall";
+import { GeneralAPI } from "@/facades/apiCall";
 import { useEffect, useState } from "react";
 import cfg from "@/configs/general";
 import "./index.css";
@@ -26,7 +26,7 @@ const CvCMD = ({ subCommand = null }: CvCMDType): JSX.Element => {
   };
 
   useEffect(() => {
-    APICall.getKey("cv")
+    GeneralAPI.getKey("cv")
       .then((value) => {
         setResumeMD(value);
       })

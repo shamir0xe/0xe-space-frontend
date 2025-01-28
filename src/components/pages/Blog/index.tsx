@@ -1,7 +1,7 @@
 import Button from "@/components/Button";
 import Header from "@/components/Header";
 import MarkdownCmp from "@/components/MarkdownCmp";
-import APICall from "@/facades/apiCall";
+import { BlogAPI } from "@/facades/apiCall";
 import PostFactory from "@/factories/postFactory";
 import Post from "@/models/post";
 import { useEffect, useState } from "react";
@@ -13,7 +13,7 @@ const Blog = (): JSX.Element => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    APICall.getPosts()
+    BlogAPI.getPosts()
       .then((postsData) => {
         // Reverse the array, make the last one comes first
         postsData.reverse();
@@ -23,7 +23,7 @@ const Blog = (): JSX.Element => {
 
         // Paginate and lazyload the posts
         postsData.forEach((postData, index) => {
-          APICall.getPost(postData.id)
+          BlogAPI.getPost(postData.id)
             .then((post: Post) => {
               setPosts((prevPosts: Post[]) => {
                 const updatedPosts = [...prevPosts]; // Create a copy of the current state

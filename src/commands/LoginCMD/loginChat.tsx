@@ -1,5 +1,5 @@
 import CookiesFacade from "@/facades/cookiesFacade";
-import APICall from "@/facades/apiCall";
+import { AuthAPI } from "@/facades/apiCall";
 import postLoginProcess from "@/orchestrators/postLoginProcess";
 import User from "@/models/user";
 import { Chat, ChatStates } from "@/helpers/chat/Chat";
@@ -38,7 +38,8 @@ export class LoginChat extends Chat {
         this.history.push(<div>Invalid Username</div>);
         return this.renderHistory();
       }
-      let token = await APICall.login(this.username, this.password);
+      let token = await AuthAPI.login(this.username, this.password);
+      console.log(`token: ${token}`)
       if (token == null) {
         this.state = ChatStates.FAILURE;
         this.history.push(<div>Incorrect, try again</div>);

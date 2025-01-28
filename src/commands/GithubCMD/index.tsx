@@ -1,11 +1,11 @@
-import APICall from "@/facades/apiCall";
+import { GeneralAPI } from "@/facades/apiCall";
 import { useState } from "react";
 import { FaGithub } from "react-icons/fa";
 
 const GithubCMD = (): JSX.Element => {
   const [value, setValue] = useState<string>("");
 
-  APICall.getKey("github")
+  GeneralAPI.getKey("github")
     .then((content: string) => {
       setValue(content);
     })

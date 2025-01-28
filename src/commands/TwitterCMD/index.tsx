@@ -1,11 +1,11 @@
-import APICall from "@/facades/apiCall";
+import { GeneralAPI } from "@/facades/apiCall";
 import { useState } from "react";
 import { FaTwitter } from "react-icons/fa";
 
 const TwitterCMD = (): JSX.Element => {
   const [value, setValue] = useState<string>("");
 
-  APICall.getKey("twitter")
+  GeneralAPI.getKey("twitter")
     .then((content: string) => {
       setValue(content);
     })

@@ -1,4 +1,4 @@
-import APICall from "@/facades/apiCall";
+import { GeneralAPI } from "@/facades/apiCall";
 import { Chat, ChatStates } from "@/helpers/chat/Chat";
 import { useEffect, useState } from "react";
 
@@ -97,7 +97,7 @@ export class SetKeyChat extends Chat {
 
   async initialize(): Promise<string> {
     try {
-      this.value = await APICall.getKey(this.key);
+      this.value = await GeneralAPI.getKey(this.key);
       return Promise.resolve(this.value);
     } catch (error: any) {
       return Promise.reject(`error: ${error}`);
@@ -107,7 +107,7 @@ export class SetKeyChat extends Chat {
   async recieve(): Promise<JSX.Element> {
     console.log(`recieved ${this.value}`);
     try {
-      await APICall.setKey(this.key, this.value);
+      await GeneralAPI.setKey(this.key, this.value);
       this.history.push(<div>Done</div>);
       this.state = ChatStates.SUCCESS;
     } catch (error: any) {
