@@ -5,10 +5,10 @@ const viTerminal = (params) => {
   const {
     ref,
     cursorRef,
-    getFocus = () => { },
-    onClick = () => { },
-    onModeChange = () => { },
-    onLineEnd = () => { },
+    getFocus = () => {},
+    onClick = () => {},
+    onModeChange = () => {},
+    onLineEnd = () => {},
   } = params;
   let mode = TerminalModes.INSERT;
   let line = "";
@@ -176,7 +176,7 @@ const stringToHtml = (string) => {
 
 const isAlpha = (ch) => ch.toUpperCase() !== ch.toLowerCase();
 const isSpace = (ch) => ch === " ";
-const isPunctuation = (ch) => "/\\;,.-_+=~:><\"'`$%^&*!".includes(ch);
+const isPunctuation = (ch) => "/\\;,.-_+=~:><\"'`$%^&*!@".includes(ch);
 const isNumber = (ch) => "0123456789".includes(ch);
 const isParanthesis = (ch) => "{}()".includes(ch);
 const writable = (character) => {
