@@ -22,6 +22,8 @@ enum Commands {
   WHOAMI = "whoami",
   SET_KEY = "set_key",
   RELOAD = "reload",
+  CONFIRM_CODE = "confirm_code",
+  RESEND_CODE = "resend_code",
 }
 
 export default Commands;

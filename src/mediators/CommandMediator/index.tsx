@@ -8,6 +8,9 @@ import LogoutCMD from "@/commands/LogoutCMD";
 import WhoAmICMD from "@/commands/WhoAmICMD";
 import User from "@/models/user";
 import SetKeyCMD from "@/commands/SetKeyCMD";
+import RegisterCMD from "@/commands/RegisterCMD";
+import ConfirmCodeCMD from "@/commands/ConfirmCodeCMD";
+import ResendCodeCMD from "@/commands/ResendCodeCMD";
 import { Chat } from "@/helpers/chat/Chat";
 import AboutMeCMD from "@/commands/AboutMeCMD";
 import LeetcodeCMD from "@/commands/LeetcodeCMD";
@@ -80,6 +83,15 @@ const CommandMediator = (
       break;
     case CommandTypes.SET_KEY:
       [output, interactiveChat] = SetKeyCMD(setFocus, ...args);
+      break;
+    case CommandTypes.REGISTER:
+      [output, interactiveChat] = RegisterCMD(setUser, ...args);
+      break;
+    case CommandTypes.CONFIRM_CODE:
+      [output, interactiveChat] = ConfirmCodeCMD(setUser, ...args);
+      break;
+    case CommandTypes.RESEND_CODE:
+      [output, interactiveChat] = ResendCodeCMD(setUser, ...args);
       break;
     case CommandTypes.LOGIN:
       [output, interactiveChat] = LoginCMD(setUser, ...args);
