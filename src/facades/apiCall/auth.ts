@@ -1,5 +1,6 @@
 import User from "@/models/user";
 import BaseAPI from "./base";
+import ServerResponse from "@/models/serverResponse";
 
 export class AuthAPI extends BaseAPI {
   static async login(
@@ -37,5 +38,44 @@ export class AuthAPI extends BaseAPI {
       throw new Error(`(${response.statusText}): ${await response.text()}`);
     }
     return (await response.json()) as User;
+  }
+
+  static async logout(): Promise<User> {
+    const response = await this.get("/auth/logout");
+    if (!response.ok) {
+      throw new Error(`(${response.statusText}): ${await response.text()}`);
+    }
+    return (await response.json()) as User;
+  }
+
+  static async resendCode(username: string, email: string): Promise<User> {
+    const response = await this.get("/auth/resend-code", {
+      username: username,
+      email: email,
+    });
+    if (!response.ok) {
+      throw new Error(`(${response.statusText}): ${await response.text()}`);
+    }
+    return (await response.json()) as User;
+  }
+
+  static async confirmCode(
+    username: string,
+    code: string,
+    password: string | null,
+  ): Promise<string> {
+    const response = await this.get("/auth/confirm-code", {
+      username: username,
+      code: code,
+      password: password,
+    });
+    let res = (await response.json()) as ServerResponse;
+    if (!response.ok) {
+      res.status = response.status;
+    }
+    if (res.status != 200) {
+      throw new Error(`(${res.status}): ${res.message}`);
+    }
+    return res.message;
   }
 }
