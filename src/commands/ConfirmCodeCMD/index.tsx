@@ -1,7 +1,7 @@
 import User from "@/models/user";
 import { ConfirmCodeChat } from "./confirmCodeChat";
 
-const ConfirmCMD = (
+const ConfirmCodeCMD = (
   setUser: (user: User) => void,
   ...args: string[]
 ): [JSX.Element, ConfirmCodeChat] => {
@@ -10,4 +10,4 @@ const ConfirmCMD = (
   return [confirmCodeChat.renderHistory(), confirmCodeChat];
 };
 
-export default ConfirmCMD;
+export default ConfirmCodeCMD;
