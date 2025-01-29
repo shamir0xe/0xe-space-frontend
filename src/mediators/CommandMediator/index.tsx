@@ -91,7 +91,7 @@ const CommandMediator = (
       [output, interactiveChat] = ConfirmCodeCMD(setUser, ...args);
       break;
     case CommandTypes.RESEND_CODE:
-      [output, interactiveChat] = ResendCodeCMD(setUser, ...args);
+      [output, interactiveChat] = ResendCodeCMD(...args);
       break;
     case CommandTypes.LOGIN:
       [output, interactiveChat] = LoginCMD(setUser, ...args);
