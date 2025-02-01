@@ -1,5 +1,6 @@
 # Logs
 # src/assets/
+.env
 src/assets/audios/
 output
 logs
