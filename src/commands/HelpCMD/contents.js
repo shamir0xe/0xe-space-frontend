@@ -62,7 +62,20 @@ const contents = {
     },
     {
       name: "login",
-      description: "Login",
+      description: "Login process",
+    },
+    {
+      name: "register",
+      description: "Register process for this website",
+    },
+    {
+      name: "resend_code",
+      description:
+        "Resends the code to the email address of the user if passes security questions",
+    },
+    {
+      name: "confirm_code",
+      description: "Code confirmation process of already registered user",
     },
     {
       name: "logout",
