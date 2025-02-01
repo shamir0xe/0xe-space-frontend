@@ -3,7 +3,7 @@ import BaseAPI from "./base";
 export class GeneralAPI extends BaseAPI {
   static async getKey(key: string): Promise<string> {
     try {
-      const response = await this.get("/general/get-key", { key: key })
+      const response = await this.get("/general/get-key", { key: key });
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
@@ -15,7 +15,7 @@ export class GeneralAPI extends BaseAPI {
 
   static async setKey(key: string, value: string): Promise<boolean> {
     try {
-      const response = await this.get("/general/set-key", { key: key, text: value });
+      const response = await this.post("/general/set-key", { key: key }, value);
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
