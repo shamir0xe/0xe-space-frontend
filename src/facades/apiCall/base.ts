@@ -58,7 +58,7 @@ export default class BaseAPI {
     return fetch(url, {
       method: "POST",
       headers: this.makeHeaders(),
-      body: body,
+      body: JSON.stringify(body),
     });
   }
 }
