@@ -68,8 +68,8 @@ const Blog = (): JSX.Element => {
     );
   };
   const renderPosts = () => {
-    return posts.map((post, index) => {
-      return (
+    return posts.map((post: Post, index: number) => {
+      return post ? (
         <div
           className="min-h-32 bg-gray-800 sm:my-5 border-transparent sm:rounded-t-[20px] blog-post"
           key={`post#${index}`}
@@ -86,7 +86,7 @@ const Blog = (): JSX.Element => {
             created at {post.created_at.toString()}
           </div>
         </div>
-      );
+      ) : (<div />);
     });
   };
   return (
