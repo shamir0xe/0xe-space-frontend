@@ -37,6 +37,7 @@ const CommandMediator = (
   navigate: NavigateFunction,
   userProperty: UserPropertyType,
   cursorProperty: CursorPropertyType,
+  secretRef: React.MutableRefObject<boolean>
 ): [string, JSX.Element, Chat | null] => {
   const [cmd, args] = commandParser(command);
   const { getUser, setUser } = userProperty;
@@ -94,7 +95,7 @@ const CommandMediator = (
       [output, interactiveChat] = ResendCodeCMD(...args);
       break;
     case CommandTypes.LOGIN:
-      [output, interactiveChat] = LoginCMD(setUser, ...args);
+      [output, interactiveChat] = LoginCMD(setUser, secretRef, ...args);
       break;
     case CommandTypes.LOGOUT:
       output = LogoutCMD(setUser, ...args);

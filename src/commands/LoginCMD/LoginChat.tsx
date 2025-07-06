@@ -6,13 +6,18 @@ import { Chat, ChatStates } from "@/helpers/chat/Chat";
 
 export class LoginChat extends Chat {
   setUser: (user: User) => void;
+  secretRef: React.MutableRefObject<boolean>;
   username: string | null = null;
   password: string | null = null;
   history: JSX.Element[] = [<div>Enter Username:</div>];
 
-  constructor(setUser: (user: User) => void) {
+  constructor(
+    setUser: (user: User) => void,
+    secretRef: React.MutableRefObject<boolean>,
+  ) {
     super();
     this.setUser = setUser;
+    this.secretRef = secretRef;
   }
 
   async recieve(line: string): Promise<JSX.Element> {
@@ -27,6 +32,7 @@ export class LoginChat extends Chat {
       this.state += 1;
       this.history.push(<div>{line}</div>);
       this.history.push(<div>Enter password:</div>);
+      this.secretRef.current = true;
       return this.renderHistory();
     } else if (this.state == 1) {
       if (line.length == 0) {
@@ -34,12 +40,12 @@ export class LoginChat extends Chat {
       }
       this.password = line;
       this.state += 1;
+      this.secretRef.current = false;
       if (this.username == null) {
         this.history.push(<div>Invalid Username</div>);
         return this.renderHistory();
       }
-      let token = await AuthAPI.login(this.username, this.password);
-      console.log(`token: ${token}`)
+      const token = await AuthAPI.login(this.username, this.password);
       if (token == null) {
         this.state = ChatStates.FAILURE;
         this.history.push(<div>Incorrect, try again</div>);

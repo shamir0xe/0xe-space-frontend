@@ -18,7 +18,6 @@ const postLoginProcess = async (
     return;
   }
   // We have a token
-  console.log(`Stored token: ${token}`);
 
   UserAPI.userInfo()
     .then((fetchedUser) => {

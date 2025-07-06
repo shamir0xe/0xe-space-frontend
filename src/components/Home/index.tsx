@@ -17,6 +17,7 @@ const Home = () => {
   const terminalRef = useRef(null);
   const cursorRef = useRef(null);
   const containerRef = useRef<HTMLElement>(null);
+  const secretRef = useRef<boolean>(false);
   const [animation, setAnimation] = useState<boolean>(true);
   const [commands, setCommands] = useState<string[]>([]);
   const [responses, setResponses] = useState<JSX.Element[]>([]);
@@ -36,67 +37,74 @@ const Home = () => {
       if (animationTimeout) clearTimeout(animationTimeout);
       animationTimeout = setTimeout(() => setAnimation(true), 200);
     };
-    const [closure, virtualKeyPress] = Console({
-      ref: terminalRef,
-      cursorRef: cursorRef,
-      onClick: () => {
-        scrollToBottom();
+    const [closure, virtualKeyPress, chatHistoryPush, chatHistoryPop] = Console(
+      {
+        secretRef: secretRef,
+        ref: terminalRef,
+        cursorRef: cursorRef,
+        onClick: () => {
+          scrollToBottom();
 
-        delayAnimation();
-      },
-      getFocus: getFocus,
-      onLineEnd: (command: string) => {
-        if (chat.current == null) {
-          console.log(`command: ${command}`);
-          const [cmd, response, interactiveChat] = CommandMediator(
-            command,
-            navigate,
-            {
-              getUser,
-              setUser,
-            },
-            { getFocus, setFocus },
-          );
-          console.log(`cmd: ${cmd}`);
-          if (interactiveChat && !interactiveChat.isEnded()) {
-            console.log("Enter the chat mode");
-            chat.current = interactiveChat;
-            setShowLeading(false);
-          }
-          if (cmd === CommandTypes.CLEAR) {
-            setCommands(() => []);
-            setResponses(() => []);
+          delayAnimation();
+        },
+        getFocus: getFocus,
+        onLineEnd: (command: string) => {
+          if (chat.current == null) {
+            console.log(`command: ${command}`);
+            const [cmd, response, interactiveChat] = CommandMediator(
+              command,
+              navigate,
+              {
+                getUser,
+                setUser,
+              },
+              { getFocus, setFocus },
+              secretRef,
+            );
+            console.log(`cmd: ${cmd}`);
+            if (interactiveChat && !interactiveChat.isEnded()) {
+              console.log("Enter the chat mode");
+              chat.current = interactiveChat;
+              setShowLeading(false);
+              chatHistoryPush();
+            }
+            if (cmd === CommandTypes.CLEAR) {
+              setCommands(() => []);
+              setResponses(() => []);
+            } else {
+              setCommands((commands) => [...commands, command]);
+              setResponses((responses) => [...responses, response]);
+            }
           } else {
-            setCommands((commands) => [...commands, command]);
-            setResponses((responses) => [...responses, response]);
-          }
-        } else {
-          // in the interactive chat
-          console.log("Chat Mode");
-          const curChat = chat.current;
-          curChat
-            .recieve(command)
-            .then((res) => {
-              console.log(res);
-              if (curChat.isEnded()) {
+            // in the interactive chat
+            console.log("Chat Mode");
+            const curChat = chat.current;
+            curChat
+              .recieve(command)
+              .then((res) => {
+                console.log(res);
+                if (curChat.isEnded()) {
+                  chat.current = null;
+                  setShowLeading(true);
+                  chatHistoryPop();
+                }
+                setResponses((responses) => [
+                  ...responses.slice(0, responses.length - 1),
+                  res,
+                ]);
+              })
+              .catch((e) => {
+                console.log(`exception: ${e}`);
                 chat.current = null;
                 setShowLeading(true);
-              }
-              setResponses((responses) => [
-                ...responses.slice(0, responses.length - 1),
-                res,
-              ]);
-            })
-            .catch((e) => {
-              console.log(`exception: ${e}`);
-              chat.current = null;
-              setShowLeading(true);
-              // TODO: Add some states to show/hide the terminal
-              // line, more specific for passwords or other inputs
-            });
-        }
+                chatHistoryPop();
+                // TODO: Add some states to show/hide the terminal
+                // line, more specific for passwords or other inputs
+              });
+          }
+        },
       },
-    });
+    );
 
     postLoginProcess(setUser);
 

@@ -1,9 +1,10 @@
 import React from "react";
 import TerminalModes from "./modes";
 import Keys from "./keys";
-import HistoryManager from "./history-manager"
+import HistoryManager from "./history-manager";
 
 interface ViTerminalParams {
+  secretRef: React.MutableRefObject<boolean>;
   ref: React.RefObject<HTMLElement>;
   cursorRef: React.RefObject<HTMLElement>;
   getFocus?: () => boolean;
@@ -12,8 +13,11 @@ interface ViTerminalParams {
   onLineEnd?: (line: string) => void;
 }
 
-const ViTerminal = (params: ViTerminalParams): [() => void, (e: KeyboardEvent) => void] => {
+const ViTerminal = (
+  params: ViTerminalParams,
+): [() => void, (e: KeyboardEvent) => void, () => void, () => void] => {
   const {
+    secretRef,
     ref,
     cursorRef,
     getFocus = () => true,
@@ -26,15 +30,35 @@ const ViTerminal = (params: ViTerminalParams): [() => void, (e: KeyboardEvent) =
   let count = "";
   let cursorPos = 0;
   let internalMode = InternalModes.NORMAL;
-  const historyManager = HistoryManager();
+  const historyManagers = [HistoryManager()];
+  const chatHistoryPush = () => {
+    historyManagers.push(HistoryManager());
+  };
+  const chatHistoryPop = () => {
+    historyManagers.pop();
+  };
+  const topChatHistory = () => {
+    return historyManagers[historyManagers.length - 1];
+  };
+
   const updateLine = () => {
     if (cursorPos < 0) cursorPos = 0;
     if (cursorPos > line.length) cursorPos = line.length;
-    if (cursorRef.current)
-      cursorRef.current.style.left = `${cursorPos}ch`;
-    if (ref.current)
-      ref.current.innerHTML = stringToHtml(line);
-    historyManager.update(line);
+    if (cursorRef.current) cursorRef.current.style.left = `${cursorPos}ch`;
+    if (ref.current) {
+      if (secretRef.current) {
+        ref.current.innerHTML = asterisk(line.length);
+      } else {
+        ref.current.innerHTML = stringToHtml(line);
+        topChatHistory().update(line);
+      }
+    }
+  };
+
+  const asterisk = (len: number): string => {
+    let res = "";
+    for (let i = 0; i < len; i++) res += "*";
+    return res;
   };
 
   const internalAction = (alterPos: number): void => {
@@ -65,7 +89,7 @@ const ViTerminal = (params: ViTerminalParams): [() => void, (e: KeyboardEvent) =
     // console.log(line);
     if (e.key === Keys.ENTER) {
       // clear the line and execute the commands
-      historyManager.newline(line);
+      if (secretRef.current == false) topChatHistory().newline(line);
       onLineEnd(line);
       line = "";
       cursorPos = 0;
@@ -91,9 +115,9 @@ const ViTerminal = (params: ViTerminalParams): [() => void, (e: KeyboardEvent) =
         break;
       }
       case TerminalModes.NORMAL: {
-        const castedCount = Number(count)
+        const castedCount = Number(count);
         const cnt = isNaN(castedCount) || castedCount == 0 ? 1 : castedCount;
-        const lowerCasedKey = e.key.toLowerCase()
+        const lowerCasedKey = e.key.toLowerCase();
         if (internalMode === InternalModes.REPLACE) {
           // replace mode have been activated, so do replace stuff
           if (writable(e.key)) {
@@ -140,9 +164,8 @@ const ViTerminal = (params: ViTerminalParams): [() => void, (e: KeyboardEvent) =
           [line, cursorPos] = viDelete(line, cursorPos, cursorPos + cnt);
         } else if ((e.ctrlKey || e.metaKey) && lowerCasedKey == Keys.r) {
           // redo
-          if (e.preventDefault)
-            e.preventDefault();
-          line = historyManager.redo();
+          if (e.preventDefault) e.preventDefault();
+          line = topChatHistory().redo();
         } else if (lowerCasedKey === Keys.r) {
           // [r/R]
           internalMode = InternalModes.REPLACE;
@@ -172,14 +195,14 @@ const ViTerminal = (params: ViTerminalParams): [() => void, (e: KeyboardEvent) =
           // TODO
         } else if (isNumber(e.key)) {
           // it's a number
-          count += e.key
+          count += e.key;
         } else if (lowerCasedKey === Keys.j || e.key === Keys.ARROW_DOWN) {
-          line = historyManager.stepHistory(+1)
+          line = topChatHistory().stepHistory(+1);
         } else if (lowerCasedKey === Keys.k || e.key === Keys.ARROW_UP) {
-          line = historyManager.stepHistory(-1)
+          line = topChatHistory().stepHistory(-1);
         } else if (e.key === Keys.u) {
           // undo
-          line = historyManager.undo()
+          line = topChatHistory().undo();
         }
         updateLine();
         break;
@@ -196,7 +219,7 @@ const ViTerminal = (params: ViTerminalParams): [() => void, (e: KeyboardEvent) =
   };
   closure();
   setup();
-  return [closure, onKeyPress];
+  return [closure, onKeyPress, chatHistoryPush, chatHistoryPop];
 };
 
 const stringToHtml = (str: string): string => {
@@ -213,7 +236,8 @@ const stringToHtml = (str: string): string => {
 
 const isAlpha = (ch: string): boolean => ch.toUpperCase() !== ch.toLowerCase();
 const isSpace = (ch: string): boolean => ch === " ";
-const isPunctuation = (ch: string): boolean => "/\\;,.-_+=~:><\"'`$%^&*!@".includes(ch);
+const isPunctuation = (ch: string): boolean =>
+  "/\\;,.-_+=~:><\"'`$%^&*!@".includes(ch);
 const isNumber = (ch: string): boolean => "0123456789".includes(ch);
 const isParanthesis = (ch: string): boolean => "{}()".includes(ch);
 const writable = (character: string): boolean => {
@@ -245,12 +269,13 @@ const viWord = (str: string, index: number, cnt: number): number => {
   return index;
 };
 
-const viDelete = (str: string, initPos: number, endPos: number): [string, number] => {
+const viDelete = (
+  str: string,
+  initPos: number,
+  endPos: number,
+): [string, number] => {
   if (initPos > endPos) [initPos, endPos] = [endPos, initPos];
-  return [
-    str.slice(0, initPos) + str.slice(endPos, str.length),
-    initPos,
-  ];
+  return [str.slice(0, initPos) + str.slice(endPos, str.length), initPos];
 };
 
 const InternalModes = {

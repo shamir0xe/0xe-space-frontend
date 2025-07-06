@@ -5,7 +5,7 @@ const PostCMD = (
   ...args: string[]
 ): [JSX.Element, PostChat] => {
   console.log(args);
-  let command: string = args[0];
+  const command: string = args[0];
   const postChat = new PostChat(setFocus, command, ...args.slice(1));
   return [postChat.renderHistory(), postChat];
 };

@@ -1,9 +1,124 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { BlogAPI } from "@/facades/apiCall";
 import PostFactory from "@/factories/postFactory";
 import { Chat, ChatStates } from "@/helpers/chat/Chat";
 import { useEffect, useState } from "react";
 import PostLS from "./PostLS";
-import PostDelete from "./PostDelete"
+import PostDelete from "./PostDelete";
+
+export class PostChat extends Chat {
+  command: string;
+  setFocus: (focus: boolean) => void;
+  postID?: string;
+  availableCommands = ["new", "edit", "ls", "delete"];
+  title: string = "";
+  content: string = "";
+  editable: boolean = false;
+
+  constructor(
+    setFocus: (focus: boolean) => void,
+    command: string,
+    postID?: string,
+  ) {
+    super();
+    this.command = command;
+    this.setFocus = setFocus;
+    this.postID = postID;
+    if (
+      !this.availableCommands.includes(command) ||
+      (command == "edit" && !postID) ||
+      (command == "delete" && !postID)
+    ) {
+      this.state = ChatStates.FAILURE;
+      this.history.push(<div className="text-left">Invalid Arguments</div>);
+      return;
+    }
+
+    if (this.command == "ls") {
+      this.history.push(<PostLS />);
+      this.state = ChatStates.SUCCESS;
+    }
+    if (this.command == "delete") {
+      if (!postID) return;
+      this.history.push(<PostDelete postID={postID} />);
+      this.state = ChatStates.SUCCESS;
+    }
+    if (["new", "edit"].includes(this.command))
+      this.history.push(
+        <ValueArea
+          setGlobalFocus={setFocus}
+          initialize={this.initialize.bind(this)}
+          onChange={({ editable, title, content }) => {
+            this.editable = editable;
+            this.content = content;
+            this.title = title;
+          }}
+        />,
+      );
+  }
+
+  async initialize(): Promise<OnChangeType> {
+    try {
+      switch (this.command) {
+        case "new":
+          this.editable = true;
+          return Promise.resolve({
+            content: "NEWW CONTENT!",
+            title: "New Post",
+            editable: true,
+          } as OnChangeType);
+        case "edit": {
+          const id = this.postID ?? "";
+          return BlogAPI.getPost(id).then((postValue) => {
+            console.log(`We got it: ${postValue.title}`);
+            this.title = postValue.title ?? "";
+            this.content = postValue.content ?? "";
+            this.editable = true;
+            return {
+              content: this.content,
+              title: this.title,
+              editable: this.editable,
+            } as OnChangeType;
+          });
+        }
+        default:
+          throw new Error("Invalid command");
+      }
+    } catch (error: any) {
+      return Promise.reject(`error: ${error}`);
+    }
+  }
+
+  async recieve(): Promise<JSX.Element> {
+    try {
+      let post = PostFactory.default();
+      switch (this.command) {
+        case "new":
+          post.title = this.title;
+          post.content = this.content;
+          await BlogAPI.newPost(post);
+          break;
+        case "edit":
+          post.id = this.postID ?? "";
+          post.title = this.title;
+          post.content = this.content;
+
+          post = await BlogAPI.editPost(post);
+          console.log(post.title);
+          console.log(post.content);
+          break;
+      }
+    } catch (error: any) {
+      this.history.push(<div>Failed: {error.toString()}</div>);
+      this.state = ChatStates.FAILURE;
+      return this.renderHistory();
+    }
+
+    this.history.push(<div>Done</div>);
+    this.state = ChatStates.SUCCESS;
+    return this.renderHistory();
+  }
+}
 
 type OnChangeType = {
   content: string;
@@ -84,115 +199,3 @@ const ValueArea = ({
     </div>
   );
 };
-
-export class PostChat extends Chat {
-  command: string;
-  setFocus: (focus: boolean) => void;
-  postID?: string;
-  availableCommands = ["new", "edit", "ls", "delete"];
-  title: string = "";
-  content: string = "";
-  editable: boolean = false;
-
-  constructor(
-    setFocus: (focus: boolean) => void,
-    command: string,
-    postID?: string,
-  ) {
-    super();
-    this.command = command;
-    this.setFocus = setFocus;
-    this.postID = postID;
-    if (
-      !this.availableCommands.includes(command) ||
-      (command == "edit" && !postID) ||
-      (command == "delete" && !postID)
-    ) {
-      this.state = ChatStates.FAILURE;
-      this.history.push(<div className="text-left">Invalid Arguments</div>);
-      return;
-    }
-
-    if (this.command == "ls") {
-      this.history.push(<PostLS />);
-      this.state = ChatStates.SUCCESS;
-    }
-    if (this.command == "delete") {
-      this.history.push(<PostDelete postID={postID} />);
-      this.state = ChatStates.SUCCESS;
-    }
-    if (["new", "edit"].includes(this.command))
-      this.history.push(
-        <ValueArea
-          setGlobalFocus={setFocus}
-          initialize={this.initialize.bind(this)}
-          onChange={({ editable, title, content }) => {
-            this.editable = editable;
-            this.content = content;
-            this.title = title;
-          }}
-        />,
-      );
-  }
-
-  async initialize(): Promise<OnChangeType> {
-    try {
-      switch (this.command) {
-        case "new":
-          this.editable = true;
-          return Promise.resolve({
-            content: "NEWW CONTENT!",
-            title: "New Post",
-            editable: true,
-          } as OnChangeType);
-        case "edit":
-          const id = this.postID ?? "";
-          return BlogAPI.getPost(id).then((postValue) => {
-            console.log(`We got it: ${postValue.title}`);
-            this.title = postValue.title ?? "";
-            this.content = postValue.content ?? "";
-            this.editable = true;
-            return {
-              content: this.content,
-              title: this.title,
-              editable: this.editable,
-            } as OnChangeType;
-          });
-        default:
-          throw new Error("Invalid command");
-      }
-    } catch (error: any) {
-      return Promise.reject(`error: ${error}`);
-    }
-  }
-
-  async recieve(): Promise<JSX.Element> {
-    try {
-      let post = PostFactory.default();
-      switch (this.command) {
-        case "new":
-          post.title = this.title;
-          post.content = this.content;
-          await BlogAPI.newPost(post);
-          break;
-        case "edit":
-          post.id = this.postID ?? "";
-          post.title = this.title;
-          post.content = this.content;
-
-          post = await BlogAPI.editPost(post);
-          console.log(post.title);
-          console.log(post.content);
-          break;
-      }
-    } catch (error: any) {
-      this.history.push(<div>Failed: {error.toString()}</div>);
-      this.state = ChatStates.FAILURE;
-      return this.renderHistory();
-    }
-
-    this.history.push(<div>Done</div>);
-    this.state = ChatStates.SUCCESS;
-    return this.renderHistory();
-  }
-}

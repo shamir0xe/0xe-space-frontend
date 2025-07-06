@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import CookiesFacade from "@/facades/cookiesFacade";
 import { AuthAPI } from "@/facades/apiCall";
 import postLoginProcess from "@/orchestrators/postLoginProcess";
