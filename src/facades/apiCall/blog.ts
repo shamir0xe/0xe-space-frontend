@@ -3,6 +3,18 @@ import BaseAPI from "./base";
 import postDTO from "@/models/dtos/postDTO";
 
 export class BlogAPI extends BaseAPI {
+  static async deletePost(postID: string): Promise<Post> {
+    try {
+      const response = await this.post(`/blog/delete/${postID}`)
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+      return postDTO(await response.json());
+    } catch (error: any) {
+      return Promise.reject(error)
+    }
+  }
+
   static async newPost(post: Post): Promise<Post> {
     try {
       const response = await this.post("/blog/create", {
@@ -55,7 +67,7 @@ export class BlogAPI extends BaseAPI {
         throw new Error(`Error: ${response.statusText}`);
       }
 
-      let postData = await response.json();
+      const postData = await response.json();
       return postDTO(postData);
     } catch (error: any) {
       return Promise.reject(error);

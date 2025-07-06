@@ -3,6 +3,7 @@ import PostFactory from "@/factories/postFactory";
 import { Chat, ChatStates } from "@/helpers/chat/Chat";
 import { useEffect, useState } from "react";
 import PostLS from "./PostLS";
+import PostDelete from "./PostDelete"
 
 type OnChangeType = {
   content: string;
@@ -88,7 +89,7 @@ export class PostChat extends Chat {
   command: string;
   setFocus: (focus: boolean) => void;
   postID?: string;
-  availableCommands = ["new", "edit", "ls"];
+  availableCommands = ["new", "edit", "ls", "delete"];
   title: string = "";
   content: string = "";
   editable: boolean = false;
@@ -104,7 +105,8 @@ export class PostChat extends Chat {
     this.postID = postID;
     if (
       !this.availableCommands.includes(command) ||
-      (command == "edit" && !postID)
+      (command == "edit" && !postID) ||
+      (command == "delete" && !postID)
     ) {
       this.state = ChatStates.FAILURE;
       this.history.push(<div className="text-left">Invalid Arguments</div>);
@@ -113,6 +115,10 @@ export class PostChat extends Chat {
 
     if (this.command == "ls") {
       this.history.push(<PostLS />);
+      this.state = ChatStates.SUCCESS;
+    }
+    if (this.command == "delete") {
+      this.history.push(<PostDelete postID={postID} />);
       this.state = ChatStates.SUCCESS;
     }
     if (["new", "edit"].includes(this.command))
@@ -140,7 +146,7 @@ export class PostChat extends Chat {
             editable: true,
           } as OnChangeType);
         case "edit":
-          let id = this.postID ?? "";
+          const id = this.postID ?? "";
           return BlogAPI.getPost(id).then((postValue) => {
             console.log(`We got it: ${postValue.title}`);
             this.title = postValue.title ?? "";
