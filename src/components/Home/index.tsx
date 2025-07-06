@@ -73,7 +73,7 @@ const Home = () => {
         } else {
           // in the interactive chat
           console.log("Chat Mode");
-          let curChat = chat.current;
+          const curChat = chat.current;
           curChat
             .recieve(command)
             .then((res) => {

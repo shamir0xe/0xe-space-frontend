@@ -1,27 +1,43 @@
-import TerminalModes from "./modes.js";
-import Keys from "./keys.js";
+import React from "react";
+import TerminalModes from "./modes";
+import Keys from "./keys";
+import HistoryManager from "./history-manager"
 
-const viTerminal = (params) => {
+interface ViTerminalParams {
+  ref: React.RefObject<HTMLElement>;
+  cursorRef: React.RefObject<HTMLElement>;
+  getFocus?: () => boolean;
+  onClick?: (e: KeyboardEvent) => void;
+  onModeChange?: (mode: TerminalModes) => void;
+  onLineEnd?: (line: string) => void;
+}
+
+const ViTerminal = (params: ViTerminalParams): [() => void, (e: KeyboardEvent) => void] => {
   const {
     ref,
     cursorRef,
-    getFocus = () => {},
-    onClick = () => {},
-    onModeChange = () => {},
-    onLineEnd = () => {},
+    getFocus = () => true,
+    onClick = () => { },
+    onModeChange = () => { },
+    onLineEnd = () => { },
   } = params;
   let mode = TerminalModes.INSERT;
   let line = "";
-  let count = null;
+  let count = "";
   let cursorPos = 0;
   let internalMode = InternalModes.NORMAL;
+  const historyManager = HistoryManager();
   const updateLine = () => {
     if (cursorPos < 0) cursorPos = 0;
     if (cursorPos > line.length) cursorPos = line.length;
-    cursorRef.current.style.left = `${cursorPos}ch`;
-    ref.current.innerHTML = stringToHtml(line);
+    if (cursorRef.current)
+      cursorRef.current.style.left = `${cursorPos}ch`;
+    if (ref.current)
+      ref.current.innerHTML = stringToHtml(line);
+    historyManager.update(line);
   };
-  const internalAction = (alterPos) => {
+
+  const internalAction = (alterPos: number): void => {
     switch (internalMode) {
       case InternalModes.DELETE:
         [line, cursorPos] = viDelete(line, cursorPos, alterPos);
@@ -35,19 +51,21 @@ const viTerminal = (params) => {
         cursorPos = alterPos;
     }
     internalMode = InternalModes.NORMAL;
+    count = "";
   };
-  const changeTerminalMode = (alterMode) => {
+  const changeTerminalMode = (alterMode: TerminalModes) => {
     mode = alterMode;
     onModeChange(mode);
     internalMode = InternalModes.NORMAL;
   };
-  const onKeyPress = (e) => {
+  const onKeyPress = (e: KeyboardEvent) => {
     if (!getFocus()) return;
     onClick(e);
     // console.log(e);
     // console.log(line);
     if (e.key === Keys.ENTER) {
       // clear the line and execute the commands
+      historyManager.newline(line);
       onLineEnd(line);
       line = "";
       cursorPos = 0;
@@ -56,7 +74,7 @@ const viTerminal = (params) => {
       return;
     }
     switch (mode) {
-      case TerminalModes.INSERT:
+      case TerminalModes.INSERT: {
         if (e.key === Keys.ESCAPE) {
           // chaning temrinal mode
           changeTerminalMode(TerminalModes.NORMAL);
@@ -71,8 +89,11 @@ const viTerminal = (params) => {
         }
         updateLine();
         break;
-      case TerminalModes.NORMAL:
-        let cnt = count === null ? 1 : count;
+      }
+      case TerminalModes.NORMAL: {
+        const castedCount = Number(count)
+        const cnt = isNaN(castedCount) || castedCount == 0 ? 1 : castedCount;
+        const lowerCasedKey = e.key.toLowerCase()
         if (internalMode === InternalModes.REPLACE) {
           // replace mode have been activated, so do replace stuff
           if (writable(e.key)) {
@@ -86,41 +107,46 @@ const viTerminal = (params) => {
           // [I]: go to the begining of the line, then Insert
           cursorPos = 0;
           changeTerminalMode(TerminalModes.INSERT);
-        } else if (e.key.toLowerCase() === Keys.i) {
+        } else if (lowerCasedKey === Keys.i) {
           // [i]
           changeTerminalMode(TerminalModes.INSERT);
         } else if (e.key === Keys.a.toUpperCase()) {
           // [A]: go to the end, then Insert
           cursorPos = line.length;
           changeTerminalMode(TerminalModes.INSERT);
-        } else if (e.key.toLowerCase() === Keys.a) {
+        } else if (lowerCasedKey === Keys.a) {
           // [a]
           changeTerminalMode(TerminalModes.INSERT);
           cursorPos += 1;
-        } else if (e.key.toLowerCase() === Keys.b) {
+        } else if (lowerCasedKey === Keys.b) {
           // [b/B]
           internalAction(viWord(line, cursorPos, -cnt));
-        } else if (e.key.toLowerCase() === Keys.e) {
+        } else if (lowerCasedKey === Keys.e) {
           // [e/E]
           internalAction(viWord(line, cursorPos, cnt));
-        } else if (e.key.toLowerCase() === Keys.w) {
+        } else if (lowerCasedKey === Keys.w) {
           // [w/W]
           let alterPos = viWord(line, cursorPos - 1, 1 + cnt);
-          alterPos = viWord(line, alterPos + 1, -cnt);
+          alterPos = viWord(line, alterPos + 1, -1);
           internalAction(alterPos);
-        } else if (e.key.toLowerCase() === Keys.h) {
+        } else if (lowerCasedKey === Keys.h || e.key === Keys.ARROW_LEFT) {
           // [h/H]
-          internalAction(cursorPos - 1);
-        } else if (e.key.toLowerCase() === Keys.l) {
+          internalAction(cursorPos - cnt);
+        } else if (lowerCasedKey === Keys.l || e.key === Keys.ARROW_RIGHT) {
           // [l/L]
-          internalAction(cursorPos + 1);
-        } else if (e.key.toLowerCase() === Keys.x) {
+          internalAction(cursorPos + cnt);
+        } else if (lowerCasedKey === Keys.x) {
           // [x/X]
           [line, cursorPos] = viDelete(line, cursorPos, cursorPos + cnt);
-        } else if (e.key.toLowerCase() === Keys.r) {
+        } else if ((e.ctrlKey || e.metaKey) && lowerCasedKey == Keys.r) {
+          // redo
+          if (e.preventDefault)
+            e.preventDefault();
+          line = historyManager.redo();
+        } else if (lowerCasedKey === Keys.r) {
           // [r/R]
           internalMode = InternalModes.REPLACE;
-        } else if (e.key.toLowerCase() === Keys.d) {
+        } else if (lowerCasedKey === Keys.d) {
           // [d/D]
           if (internalMode === InternalModes.DELETE) {
             line = "";
@@ -129,24 +155,35 @@ const viTerminal = (params) => {
           } else {
             internalMode = InternalModes.DELETE;
           }
-        } else if (e.key.toLowerCase() === Keys.c) {
+        } else if (lowerCasedKey === Keys.c) {
           // [c/C]
           internalMode = InternalModes.DELETE_INSERT;
-        } else if (e.key.toLowerCase() === Keys.HAT || e.key === Keys.ZERO) {
+        } else if (lowerCasedKey === Keys.HAT || e.key === Keys.ZERO) {
           // [^/0]: go to beining of the line
           internalAction(0);
-        } else if (e.key.toLowerCase() === Keys.DOLLOR) {
+        } else if (lowerCasedKey === Keys.DOLLOR) {
           // [$]: go to the end of the line
           internalAction(line.length);
-        } else if (e.key.toLowerCase() === Keys.PERCENTAGE) {
+        } else if (lowerCasedKey === Keys.PERCENTAGE) {
           // [%]: match the paranthesis/bracket/...
           // TODO
-        } else if (e.key.toLowerCase() === Keys.FORWARD_SLASH) {
+        } else if (lowerCasedKey === Keys.FORWARD_SLASH) {
           // [/]: search the upcomming word
           // TODO
+        } else if (isNumber(e.key)) {
+          // it's a number
+          count += e.key
+        } else if (lowerCasedKey === Keys.j || e.key === Keys.ARROW_DOWN) {
+          line = historyManager.stepHistory(+1)
+        } else if (lowerCasedKey === Keys.k || e.key === Keys.ARROW_UP) {
+          line = historyManager.stepHistory(-1)
+        } else if (e.key === Keys.u) {
+          // undo
+          line = historyManager.undo()
         }
         updateLine();
         break;
+      }
       default:
         break;
     }
@@ -162,9 +199,9 @@ const viTerminal = (params) => {
   return [closure, onKeyPress];
 };
 
-const stringToHtml = (string) => {
+const stringToHtml = (str: string): string => {
   let html = "";
-  for (let ch of string) {
+  for (const ch of str) {
     if (ch === " ") {
       html += "&nbsp;";
     } else {
@@ -174,12 +211,12 @@ const stringToHtml = (string) => {
   return html;
 };
 
-const isAlpha = (ch) => ch.toUpperCase() !== ch.toLowerCase();
-const isSpace = (ch) => ch === " ";
-const isPunctuation = (ch) => "/\\;,.-_+=~:><\"'`$%^&*!@".includes(ch);
-const isNumber = (ch) => "0123456789".includes(ch);
-const isParanthesis = (ch) => "{}()".includes(ch);
-const writable = (character) => {
+const isAlpha = (ch: string): boolean => ch.toUpperCase() !== ch.toLowerCase();
+const isSpace = (ch: string): boolean => ch === " ";
+const isPunctuation = (ch: string): boolean => "/\\;,.-_+=~:><\"'`$%^&*!@".includes(ch);
+const isNumber = (ch: string): boolean => "0123456789".includes(ch);
+const isParanthesis = (ch: string): boolean => "{}()".includes(ch);
+const writable = (character: string): boolean => {
   return (
     character.length === 1 &&
     (isNumber(character) ||
@@ -189,18 +226,18 @@ const writable = (character) => {
       isParanthesis(character))
   );
 };
-const withinWord = (character) => !isSpace(character);
+const withinWord = (character: string): boolean => !isSpace(character);
 
-const viWord = (string, index, cnt) => {
-  let direction = cnt / Math.abs(cnt);
-  if (index >= string.length) index = string.length - 1;
+const viWord = (str: string, index: number, cnt: number): number => {
+  const direction = cnt / Math.abs(cnt);
+  if (index >= str.length) index = str.length - 1;
   if (index < 0) index = 0;
   // console.log(`in the viWord ${index} -- direction: ${direction}`);
-  const inRange = () => index < string.length && index >= 0;
+  const inRange = () => index < str.length && index >= 0;
   while (inRange() && cnt !== 0) {
     index += direction;
-    while (inRange() && isSpace(string[index])) index += direction;
-    while (inRange() && withinWord(string[index])) index += direction;
+    while (inRange() && isSpace(str[index])) index += direction;
+    while (inRange() && withinWord(str[index])) index += direction;
     cnt -= direction;
   }
   index -= direction;
@@ -208,10 +245,10 @@ const viWord = (string, index, cnt) => {
   return index;
 };
 
-const viDelete = (string, initPos, endPos) => {
+const viDelete = (str: string, initPos: number, endPos: number): [string, number] => {
   if (initPos > endPos) [initPos, endPos] = [endPos, initPos];
   return [
-    string.slice(0, initPos) + string.slice(endPos, string.length),
+    str.slice(0, initPos) + str.slice(endPos, str.length),
     initPos,
   ];
 };
@@ -223,4 +260,4 @@ const InternalModes = {
   DELETE_INSERT: "deleteInsert",
 };
 
-export default viTerminal;
+export default ViTerminal;

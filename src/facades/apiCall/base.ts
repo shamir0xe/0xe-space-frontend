@@ -1,11 +1,13 @@
 import CookiesFacade from "../cookiesFacade";
 
+type UrlParamValue = string | number | boolean
+
 export default class BaseAPI {
   static baseURL: string = import.meta.env.VITE_BASE_URL;
 
   protected static makeParams(
     url: string,
-    params?: Record<string, any>,
+    params?: Record<string, UrlParamValue>,
   ): string {
     url = `${this.baseURL}${url}`;
     if (url[-1] == "/") url = url.slice(0, -1);
@@ -23,15 +25,14 @@ export default class BaseAPI {
         }
       }
     }
-    console.log(`created URL is: ${url}`);
     return url;
   }
 
   protected static makeHeaders(): Record<string, string> {
-    let headers: Record<string, string> = {
+    const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
-    let token = CookiesFacade.readToken();
+    const token = CookiesFacade.readToken();
     if (typeof token == "string" && token) {
       headers["Authorization"] = `Bearer ${token}`;
     }
@@ -40,7 +41,7 @@ export default class BaseAPI {
 
   protected static async get(
     url: string,
-    params?: Record<string, any>,
+    params?: Record<string, UrlParamValue>,
   ): Promise<Response> {
     url = this.makeParams(url, params);
     return fetch(url, {
@@ -51,7 +52,7 @@ export default class BaseAPI {
 
   protected static async post(
     url: string,
-    params?: Record<string, any>,
+    params?: Record<string, UrlParamValue>,
     body: string = "",
   ): Promise<Response> {
     url = this.makeParams(url, params);

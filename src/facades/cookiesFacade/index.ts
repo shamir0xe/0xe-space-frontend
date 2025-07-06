@@ -12,6 +12,7 @@ class CookiesFacade {
   }
   static readToken(): string | null {
     const token = Cookies.get("token");
+    if (!token) return null
     return token;
   }
 }

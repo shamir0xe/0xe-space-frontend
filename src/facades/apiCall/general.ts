@@ -8,7 +8,7 @@ export class GeneralAPI extends BaseAPI {
         throw new Error(`Error: ${response.statusText}`);
       }
       return Promise.resolve(await response.json());
-    } catch (error: any) {
+    } catch (error: unknown) {
       return Promise.reject(error);
     }
   }
@@ -20,7 +20,7 @@ export class GeneralAPI extends BaseAPI {
         throw new Error(`Error: ${response.statusText}`);
       }
       return Promise.resolve(true);
-    } catch (error: any) {
+    } catch (error: unknown) {
       return Promise.reject(error);
     }
   }

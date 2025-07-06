@@ -1,4 +1,4 @@
-const keys = {
+const Keys = {
   i: "i",
   a: "a",
   b: "b",
@@ -12,6 +12,7 @@ const keys = {
   k: "k",
   h: "h",
   l: "l",
+  u: "u",
   ZERO: "0",
   HAT: "^",
   DOLLOR: "$",
@@ -20,6 +21,11 @@ const keys = {
   ENTER: "Enter",
   BACKSPACE: "Backspace",
   FORWARD_SLASH: "/",
+  ARROW_UP: "ArrowUp",
+  ARROW_DOWN: "ArrowDown",
+  ARROW_LEFT: "ArrowLeft",
+  ARROW_RIGHT: "ArrowRight",
+  CTRL: "Ctrl",
 };
 
-export default keys;
+export default Keys;
