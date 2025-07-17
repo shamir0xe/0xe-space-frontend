@@ -124,7 +124,7 @@ const Home = () => {
     console.log(`Updated User: ${user.name}`);
   }, [user]);
 
-  const TerminalHeader = (): JSX.Element => {
+  const TerminalHeader = ({ navigate }: { navigate: (path: string) => void }): JSX.Element => {
     return (
       <Header
         className="flex items-center w-full justify-between text-white"
@@ -152,7 +152,7 @@ const Home = () => {
 
   return (
     <div className="relative bg-[--background-color] min-h-screen mx-auto max-w-4xl">
-      <TerminalHeader />
+      <TerminalHeader navigate={navigate} />
       <Terminal
         showLeading={showLeading}
         containerRef={containerRef}

@@ -2,32 +2,35 @@ import { UserAPI } from "@/facades/apiCall";
 import CookiesFacade from "@/facades/cookiesFacade";
 import User from "@/models/user";
 
+/**
+ * Attempts to retrieve the user from cookies and login using the token.
+ * @param setUser - Function to update the user state.
+ * @param token - Optional token string to use for login. If not provided, will read from cookies.
+ * @returns A promise that resolves when login is complete.
+ */
 const postLoginProcess = async (
   setUser: (user: User) => void,
   token: string | null = null,
-) => {
-  /**
-   * Read cookies for retrieving the user
-   * if the cookie have been found, try to
-   * login using that token
-   * **/
-  if (token == null) {
+): Promise<void> => {
+  // Try to retrieve the token if not provided
+  if (!token) {
     token = CookiesFacade.readToken();
   }
-  if (token == null) {
+  if (!token) {
+    // No token found, nothing to do
     return;
   }
-  // We have a token
-
-  UserAPI.userInfo()
-    .then((fetchedUser) => {
-      console.log(`We already have a user: ${fetchedUser.username}`);
-      fetchedUser.token = token;
-      setUser(fetchedUser);
-    })
-    .catch((error) => {
-      console.log(`error occurred while try to login the user: ${error}`);
-    });
+  try {
+    // Fetch user info from API
+    const fetchedUser = await UserAPI.userInfo();
+    console.log(`We already have a user: ${fetchedUser.username}`);
+    // Assign token if needed
+    fetchedUser.token = token;
+    setUser(fetchedUser);
+    return Promise.resolve()
+  } catch (error) {
+    return Promise.reject(`Error occurred while trying to login the user: ${error}`)
+  }
 };
 
 export default postLoginProcess;
