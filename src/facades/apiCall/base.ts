@@ -10,7 +10,7 @@ export default class BaseAPI {
     params?: Record<string, UrlParamValue>,
   ): string {
     url = `${this.baseURL}${url}`;
-    if (url[-1] == "/") url = url.slice(0, -1);
+    if (url[url.length - 1] == "/") url = url.slice(0, -1);
     if (params) {
       let first = true;
       for (const key in params) {
