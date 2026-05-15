@@ -2,6 +2,7 @@ import React from "react";
 import TerminalModes from "./modes";
 import Keys from "./keys";
 import HistoryManager from "./history-manager";
+import { isNumber, writable, viWord, viDelete } from "./vi-utils";
 
 interface ViTerminalParams {
   secretRef: React.MutableRefObject<boolean>;
@@ -232,50 +233,6 @@ const stringToHtml = (str: string): string => {
     }
   }
   return html;
-};
-
-const isAlpha = (ch: string): boolean => ch.toUpperCase() !== ch.toLowerCase();
-const isSpace = (ch: string): boolean => ch === " ";
-const isPunctuation = (ch: string): boolean =>
-  "/\\;,.-_+=~:><\"'`$%^&*!@".includes(ch);
-const isNumber = (ch: string): boolean => "0123456789".includes(ch);
-const isParanthesis = (ch: string): boolean => "{}()".includes(ch);
-const writable = (character: string): boolean => {
-  return (
-    character.length === 1 &&
-    (isNumber(character) ||
-      isAlpha(character) ||
-      isSpace(character) ||
-      isPunctuation(character) ||
-      isParanthesis(character))
-  );
-};
-const withinWord = (character: string): boolean => !isSpace(character);
-
-const viWord = (str: string, index: number, cnt: number): number => {
-  const direction = cnt / Math.abs(cnt);
-  if (index >= str.length) index = str.length - 1;
-  if (index < 0) index = 0;
-  // console.log(`in the viWord ${index} -- direction: ${direction}`);
-  const inRange = () => index < str.length && index >= 0;
-  while (inRange() && cnt !== 0) {
-    index += direction;
-    while (inRange() && isSpace(str[index])) index += direction;
-    while (inRange() && withinWord(str[index])) index += direction;
-    cnt -= direction;
-  }
-  index -= direction;
-  // console.log(`after ${index}`);
-  return index;
-};
-
-const viDelete = (
-  str: string,
-  initPos: number,
-  endPos: number,
-): [string, number] => {
-  if (initPos > endPos) [initPos, endPos] = [endPos, initPos];
-  return [str.slice(0, initPos) + str.slice(endPos, str.length), initPos];
 };
 
 const InternalModes = {
