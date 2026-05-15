@@ -1,6 +1,6 @@
 import MarkdownCmp from "@/components/MarkdownCmp";
 import { GeneralAPI } from "@/facades/apiCall";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SocialsCMD from "../SocialsCMD";
 import TypeSetterMediator from "@/mediators/TypeSetterMediator";
 import Button from "@/components/Button";
@@ -8,13 +8,11 @@ import Button from "@/components/Button";
 const AboutMeCMD = (): JSX.Element => {
   const [value, setValue] = useState<string>("");
 
-  GeneralAPI.getKey("about_me")
-    .then((content: string) => {
-      setValue(content);
-    })
-    .catch((error) => {
-      console.log(`error occurred: ${error}`);
-    });
+  useEffect(() => {
+    GeneralAPI.getKey("about_me")
+      .then((content: string) => setValue(content))
+      .catch((error: unknown) => setValue(`## Error loading content\n${error}`));
+  }, []);
   return (
     <div>
       <MarkdownCmp content={value} />
