@@ -22,7 +22,6 @@ export class LoginChat extends Chat {
 
   async recieve(line: string): Promise<JSX.Element> {
     line = line.trim();
-    console.log(`recieved ${line}`);
     if (this.state == 0) {
       if (line.length == 0) {
         this.history.push(<div>Username couldn't be null</div>);

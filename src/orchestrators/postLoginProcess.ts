@@ -23,8 +23,6 @@ const postLoginProcess = async (
   try {
     // Fetch user info from API
     const fetchedUser = await UserAPI.userInfo();
-    console.log(`We already have a user: ${fetchedUser.username}`);
-    // Assign token if needed
     fetchedUser.token = token;
     setUser(fetchedUser);
     return Promise.resolve()

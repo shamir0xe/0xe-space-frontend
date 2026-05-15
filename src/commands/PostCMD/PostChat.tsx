@@ -70,7 +70,6 @@ export class PostChat extends Chat {
         case "edit": {
           const id = this.postID ?? "";
           return BlogAPI.getPost(id).then((postValue) => {
-            console.log(`We got it: ${postValue.title}`);
             this.title = postValue.title ?? "";
             this.content = postValue.content ?? "";
             this.editable = true;
@@ -104,8 +103,6 @@ export class PostChat extends Chat {
           post.content = this.content;
 
           post = await BlogAPI.editPost(post);
-          console.log(post.title);
-          console.log(post.content);
           break;
       }
     } catch (error: any) {
@@ -142,16 +139,10 @@ const ValueArea = ({
   const [editable, setEditable] = useState<boolean>(false);
 
   const handleFocus = (currentFocus: boolean) => {
-    if (currentFocus) {
-      console.log("Text area Focused!");
-    } else {
-      console.log("Text area Blured!");
-    }
     setGlobalFocus(!currentFocus);
   };
 
   useEffect(() => {
-    console.log(title);
     onChange({
       title: title,
       content: content,
@@ -162,13 +153,12 @@ const ValueArea = ({
   useEffect(() => {
     initialize()
       .then(({ content, title, editable }) => {
-        console.log("CALLING");
         setContent(content);
         setTitle(title);
         setEditable(editable);
       })
-      .catch((error: any) => {
-        console.log(`errrror: ${error}`);
+      .catch((error: unknown) => {
+        setContent(`Error loading post: ${error}`);
       });
   }, []);
 
