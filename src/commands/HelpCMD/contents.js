@@ -17,6 +17,18 @@ const contents = {
       description: "Navigate to blog0xe for it's awesome contents :[",
     },
     {
+      name: "post",
+      options: {
+        "ls [page]": "Lists the blog posts",
+        "comments <id> [page]": "Shows the comments of a post",
+        "comment <id>": "Adds a comment to a post (login required)",
+        "uncomment <comment-id>": "Deletes one of your comments",
+        "rate <id> <1-5>": "Rates a post (login required)",
+        "unrate <id>": "Removes your rating of a post",
+      },
+      description: "Blog posts, comments and ratings from the terminal",
+    },
+    {
       name: "socials",
       description: "My social networks list",
     },
@@ -70,12 +82,19 @@ const contents = {
     },
     {
       name: "resend_code",
-      description:
-        "Resends the code to the email address of the user if passes security questions",
+      description: "Sends a new verification code to your email address",
     },
     {
       name: "confirm_code",
-      description: "Code confirmation process of already registered user",
+      description: "Verifies your email with the received code and logs you in",
+    },
+    {
+      name: "forgot_password",
+      description: "Emails you a password reset code",
+    },
+    {
+      name: "reset_password",
+      description: "Sets a new password with the reset code",
     },
     {
       name: "logout",

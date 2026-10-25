@@ -1,16 +1,50 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BlogAPI } from "@/facades/apiCall";
-import PostFactory from "@/factories/postFactory";
+import { errorMessage } from "@/facades/apiCall/base";
 import { Chat, ChatStates } from "@/helpers/chat/Chat";
 import { useEffect, useState } from "react";
 import PostLS from "./PostLS";
 import PostDelete from "./PostDelete";
+import PostRate from "./PostRate";
+import PostComments from "./PostComments";
+import PostUncomment from "./PostUncomment";
+
+const USAGE =
+  "Usage: post ls [page] | new | edit <id> | delete <id> | rate <id> <1-5> | unrate <id> | comments <id> [page] | comment <id> | uncomment <comment-id>";
+
+const isInt = (s: string | undefined, min: number, max: number): boolean =>
+  s !== undefined && /^\d+$/.test(s) && Number(s) >= min && Number(s) <= max;
+
+/** Returns a usage message when the arguments are invalid, otherwise null. */
+export const validatePostArgs = (command: string, args: string[]): string | null => {
+  const [id, extra] = args;
+  switch (command) {
+    case "new":
+      return null;
+    case "ls":
+      return id === undefined || isInt(id, 1, 1e9) ? null : "Usage: post ls [page]";
+    case "edit":
+    case "delete":
+    case "unrate":
+    case "comment":
+      return id ? null : `Usage: post ${command} <id>`;
+    case "uncomment":
+      return id ? null : "Usage: post uncomment <comment-id>";
+    case "rate":
+      return id && isInt(extra, 1, 5) ? null : "Usage: post rate <id> <1-5>";
+    case "comments":
+      return id && (extra === undefined || isInt(extra, 1, 1e9))
+        ? null
+        : "Usage: post comments <id> [page]";
+    default:
+      return USAGE;
+  }
+};
 
 export class PostChat extends Chat {
   command: string;
   setFocus: (focus: boolean) => void;
   postID?: string;
-  availableCommands = ["new", "edit", "ls", "delete"];
   title: string = "";
   content: string = "";
   editable: boolean = false;
@@ -18,43 +52,67 @@ export class PostChat extends Chat {
   constructor(
     setFocus: (focus: boolean) => void,
     command: string,
-    postID?: string,
+    ...args: string[]
   ) {
     super();
     this.command = command;
     this.setFocus = setFocus;
-    this.postID = postID;
-    if (
-      !this.availableCommands.includes(command) ||
-      (command == "edit" && !postID) ||
-      (command == "delete" && !postID)
-    ) {
+    this.postID = args[0];
+
+    const usage = validatePostArgs(command, args);
+    if (usage) {
       this.state = ChatStates.FAILURE;
-      this.history.push(<div className="text-left">Invalid Arguments</div>);
+      this.history.push(<div className="text-left">{usage}</div>);
       return;
     }
 
-    if (this.command == "ls") {
-      this.history.push(<PostLS />);
-      this.state = ChatStates.SUCCESS;
+    const id = args[0];
+    switch (command) {
+      case "ls":
+        this.history.push(<PostLS page={id ? Number(id) : 1} />);
+        this.state = ChatStates.SUCCESS;
+        return;
+      case "delete":
+        this.history.push(<PostDelete postID={id} />);
+        this.state = ChatStates.SUCCESS;
+        return;
+      case "rate":
+        this.history.push(<PostRate postID={id} value={Number(args[1])} />);
+        this.state = ChatStates.SUCCESS;
+        return;
+      case "unrate":
+        this.history.push(<PostRate postID={id} value={null} />);
+        this.state = ChatStates.SUCCESS;
+        return;
+      case "comments":
+        this.history.push(
+          <PostComments postID={id} page={args[1] ? Number(args[1]) : 1} />,
+        );
+        this.state = ChatStates.SUCCESS;
+        return;
+      case "uncomment":
+        this.history.push(<PostUncomment commentID={id} />);
+        this.state = ChatStates.SUCCESS;
+        return;
+      case "comment":
+        // The next line typed in the terminal is the comment.
+        this.history.push(
+          <div className="text-left">Write your comment and press enter:</div>,
+        );
+        return;
     }
-    if (this.command == "delete") {
-      if (!postID) return;
-      this.history.push(<PostDelete postID={postID} />);
-      this.state = ChatStates.SUCCESS;
-    }
-    if (["new", "edit"].includes(this.command))
-      this.history.push(
-        <ValueArea
-          setGlobalFocus={setFocus}
-          initialize={this.initialize.bind(this)}
-          onChange={({ editable, title, content }) => {
-            this.editable = editable;
-            this.content = content;
-            this.title = title;
-          }}
-        />,
-      );
+
+    this.history.push(
+      <ValueArea
+        setGlobalFocus={setFocus}
+        initialize={this.initialize.bind(this)}
+        onChange={({ editable, title, content }) => {
+          this.editable = editable;
+          this.content = content;
+          this.title = title;
+        }}
+      />,
+    );
   }
 
   async initialize(): Promise<OnChangeType> {
@@ -88,25 +146,41 @@ export class PostChat extends Chat {
     }
   }
 
-  async recieve(): Promise<JSX.Element> {
+  async recieve(line: string = ""): Promise<JSX.Element> {
+    if (this.command == "comment") {
+      const content = line.trim();
+      if (!content) {
+        this.history.push(<div>Comment couldn't be empty</div>);
+        return this.renderHistory();
+      }
+      try {
+        await BlogAPI.addComment(this.postID ?? "", content);
+        this.history.push(
+          <div>Comment added. See it with: post comments {this.postID}</div>,
+        );
+        this.state = ChatStates.SUCCESS;
+      } catch (error) {
+        this.history.push(<div>Failed: {errorMessage(error)}</div>);
+        this.state = ChatStates.FAILURE;
+      }
+      return this.renderHistory();
+    }
+
     try {
-      let post = PostFactory.default();
       switch (this.command) {
         case "new":
-          post.title = this.title;
-          post.content = this.content;
-          await BlogAPI.newPost(post);
+          await BlogAPI.newPost({ title: this.title, content: this.content });
           break;
         case "edit":
-          post.id = this.postID ?? "";
-          post.title = this.title;
-          post.content = this.content;
-
-          post = await BlogAPI.editPost(post);
+          await BlogAPI.editPost({
+            id: this.postID ?? "",
+            title: this.title,
+            content: this.content,
+          });
           break;
       }
-    } catch (error: any) {
-      this.history.push(<div>Failed: {error.toString()}</div>);
+    } catch (error) {
+      this.history.push(<div>Failed: {errorMessage(error)}</div>);
       this.state = ChatStates.FAILURE;
       return this.renderHistory();
     }

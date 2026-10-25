@@ -1,5 +1,5 @@
 import { BlogAPI } from "@/facades/apiCall";
-import Post from "@/models/post";
+import { errorMessage } from "@/facades/apiCall/base";
 import { useEffect, useState } from "react";
 
 interface PostDeleteProps {
@@ -10,18 +10,11 @@ const PostDelete = ({ postID }: PostDeleteProps) => {
   const [status, setStatus] = useState<string>("waiting...");
 
   useEffect(() => {
-    BlogAPI.deletePost(postID).then((post: Post) => {
-      setStatus(`post #${post.id}: -${post.title}- have been removed!`)
-    }).catch(error => {
-      setStatus(`could not delete the post: ${error}`)
-    });
-    return () => { }
-  }, []);
+    BlogAPI.deletePost(postID)
+      .then(() => setStatus(`post #${postID} and its comments have been removed!`))
+      .catch((error) => setStatus(`could not delete the post: ${errorMessage(error)}`));
+  }, [postID]);
 
-  return (
-    <div className="">
-      {status}
-    </div>
-  );
+  return <div>{status}</div>;
 };
 export default PostDelete;
