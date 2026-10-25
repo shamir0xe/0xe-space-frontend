@@ -23,14 +23,20 @@ A personal portfolio website built as an interactive terminal. Navigate with Uni
 | `socials` | Show all social links |
 | `leetcode` `codeforces` `topcoder` | Competitive programming profiles |
 | `github` `twitter` `youtube` | Social profiles |
-| `post ls` | List blog posts |
-| `post new` | Create a post (opens editor) |
-| `post edit <id>` | Edit a post |
-| `post delete <id>` | Delete a post |
-| `login` | Sign in |
+| `post ls [page]` | List blog posts |
+| `post new` | Create a post (opens editor, admin) |
+| `post edit <id>` | Edit a post (admin) |
+| `post delete <id>` | Delete a post with its comments (admin) |
+| `post rate <id> <1-5>` / `post unrate <id>` | Rate a post / remove your rating |
+| `post comments <id> [page]` | Show a post's comments |
+| `post comment <id>` | Comment on a post (the next line is the comment) |
+| `post uncomment <comment-id>` | Delete your comment (admins: any comment) |
+| `login` | Sign in with username or email |
 | `register` | Create account |
-| `confirm_code` | Verify registration code |
-| `resend_code` | Resend verification code |
+| `confirm_code` | Verify your email with the received code (logs you in) |
+| `resend_code` | Resend the verification code |
+| `forgot_password` | Email a password reset code |
+| `reset_password` | Set a new password with the reset code |
 | `whoami` | Show current user |
 | `logout` | Sign out |
 | `set_key <key>` | Update a backend config key (admin) |
@@ -70,7 +76,7 @@ make clean      # remove dist/
 
 | Variable | Description |
 |---|---|
-| `VITE_BASE_URL` | Backend API base URL (e.g. `https://api.example.com`) |
+| `VITE_BASE_URL` | Backend API base URL including the version (e.g. `https://0xespace.com/api/v1`, locally `http://localhost:8080/api/v1`) |
 
 ## Architecture
 

@@ -15,7 +15,7 @@ npm run preview   # Preview production build locally
 
 This is a React + TypeScript + Vite SPA built as an interactive terminal/portfolio site. The UI simulates a Unix shell where users type commands to navigate content (blog posts, profile, CV, social links).
 
-**Environment:** Copy `.env.sample` to `.env` and set `VITE_BASE_URL` to the backend API URL.
+**Environment:** Copy `.env.sample` to `.env` and set `VITE_BASE_URL` to the backend API URL, including `/api/v1` (Go backend: `0xe-space-api`).
 
 ### Core Data Flow
 
@@ -29,7 +29,7 @@ This is a React + TypeScript + Vite SPA built as an interactive terminal/portfol
 
 **`CommandMediator`** (`src/helpers/mediators/`) — the single entry point for all terminal input. Add new commands here and create the corresponding class under `src/commands/`.
 
-**Facade pattern for API** (`src/facades/apiCall/`) — `BaseAPI` handles HTTP + auth headers; specialized classes (`AuthAPI`, `BlogAPI`, `UserAPI`, `GeneralAPI`) extend it. Bearer tokens are managed by `CookiesFacade`.
+**Facade pattern for API** (`src/facades/apiCall/`) — `BaseAPI.request` sends JSON, throws `ApiError` (`{error:{code,message}}`; show it with `errorMessage`) and, when a stored token is rejected, drops it and retries GETs anonymously. Specialized classes (`AuthAPI`, `BlogAPI`, `UserAPI`, `GeneralAPI`) extend it. Bearer tokens are managed by `CookiesFacade`; the session is restored in `AuthProvider` on every page.
 
 **React Context** — two contexts in `src/components/context/`:
 - `AuthContext` — user auth state (username, token, email, is_admin)
