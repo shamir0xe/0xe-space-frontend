@@ -1,4 +1,5 @@
 import { GeneralAPI } from "@/facades/apiCall";
+import { errorMessage } from "@/facades/apiCall/base";
 import { Chat, ChatStates } from "@/helpers/chat/Chat";
 import { useEffect, useState } from "react";
 
@@ -36,7 +37,7 @@ const ValueArea = ({
         console.log("got the prev value");
         setValue(value);
       })
-      .catch((error: any) => {
+      .catch((error: unknown) => {
         console.log(`error occurred: ${error}`);
       })
       .finally(() => {
@@ -72,8 +73,6 @@ export class SetKeyChat extends Chat {
     "github",
     "leetcode",
     "cv",
-    "email_template_verification_code",
-    "email_template_welcomen"
   ];
   value: string = "";
 
@@ -99,7 +98,7 @@ export class SetKeyChat extends Chat {
     try {
       this.value = await GeneralAPI.getKey(this.key);
       return Promise.resolve(this.value);
-    } catch (error: any) {
+    } catch (error: unknown) {
       return Promise.reject(`error: ${error}`);
     }
   }
@@ -110,8 +109,8 @@ export class SetKeyChat extends Chat {
       await GeneralAPI.setKey(this.key, this.value);
       this.history.push(<div>Done</div>);
       this.state = ChatStates.SUCCESS;
-    } catch (error: any) {
-      this.history.push(<div>Failed: {error.toString()}</div>);
+    } catch (error: unknown) {
+      this.history.push(<div>Failed: {errorMessage(error)}</div>);
       this.state = ChatStates.FAILURE;
     }
     return this.renderHistory();
