@@ -1,81 +1,64 @@
 import User from "@/models/user";
 import BaseAPI from "./base";
-import ServerResponse from "@/models/serverResponse";
+
+/** A successful login: the bearer token and the logged-in user. */
+export type Session = {
+  token: string;
+  token_type: string;
+  user: User;
+};
+
+export type RegisterInput = {
+  username: string;
+  password: string;
+  email: string;
+  name?: string | null;
+};
+
+export type RegisterResult = {
+  user: User;
+  verification_email_sent: boolean;
+};
 
 export class AuthAPI extends BaseAPI {
-  static async login(
-    username: string,
-    password: string,
-  ): Promise<string | null> {
-    try {
-      const response = await this.get("/auth/login", {
-        username: username,
-        password: password,
-      });
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
-      return await response.text();
-    } catch (error: any) {
-      console.log(`error occurred: ${error}`);
-      return null;
-    }
+  /** login accepts a username or an email address. */
+  static login(login: string, password: string): Promise<Session> {
+    return this.post<Session>("/auth/login", { login, password });
   }
 
-  static async register(
-    username: string,
-    password: string,
+  static register(input: RegisterInput): Promise<RegisterResult> {
+    return this.post<RegisterResult>("/auth/register", {
+      ...input,
+      name: input.name || undefined,
+    });
+  }
+
+  /** Confirms the email with the received code and logs the user in. */
+  static verifyEmail(login: string, code: string): Promise<Session> {
+    return this.post<Session>("/auth/verify-email", { login, code });
+  }
+
+  /** Always succeeds; the server never reveals whether the email exists. */
+  static async resendCode(email: string): Promise<void> {
+    await this.post("/auth/resend-code", { email });
+  }
+
+  /** Revokes the current token on the server. */
+  static async logout(): Promise<void> {
+    await this.post("/auth/logout");
+  }
+
+  /** Always succeeds; the server never reveals whether the email exists. */
+  static async forgotPassword(email: string): Promise<void> {
+    await this.post("/auth/password/forgot", { email });
+  }
+
+  /** Sets a new password and logs out every device. */
+  static async resetPassword(
     email: string,
-    name: string | null,
-  ): Promise<User> {
-    const response = await this.get("/auth/register", {
-      username: username,
-      password: password,
-      email: email,
-      name: name,
-    });
-    if (!response.ok) {
-      throw new Error(`(${response.statusText}): ${await response.text()}`);
-    }
-    return (await response.json()) as User;
-  }
-
-  static async logout(): Promise<User> {
-    const response = await this.get("/auth/logout");
-    if (!response.ok) {
-      throw new Error(`(${response.statusText}): ${await response.text()}`);
-    }
-    return (await response.json()) as User;
-  }
-
-  static async resendCode(username: string, email: string): Promise<User> {
-    const response = await this.get("/auth/resend-code", {
-      username: username,
-      email: email,
-    });
-    if (!response.ok) {
-      throw new Error(`(${response.statusText}): ${await response.text()}`);
-    }
-    return (await response.json()) as User;
-  }
-
-  static async confirmCode(
-    username: string,
     code: string,
-    password: string | null,
-  ): Promise<string> {
-    const response = await this.get("/auth/confirm-code", {
-      username: username,
-      code: code,
-      password: password,
-    });
-    let res = (await response.json()) as ServerResponse;
-    if (!response.ok) {
-      res.status = response.status;
-    }
-    if (res.status != 200) {
-      throw new Error(`(${res.status}): ${res.message}`);
-    }
-    return res.message;
+    password: string,
+  ): Promise<void> {
+    await this.post("/auth/password/reset", { email, code, password });
   }
 }

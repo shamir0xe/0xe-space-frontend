@@ -31,13 +31,28 @@ describe("postDTO", () => {
     expect(post.updated_at.getMonth()).toBe(5); // June = 5 (0-indexed)
   });
 
-  it("defaults rating_avg to -1 when absent", () => {
-    const post = postDTO({ ...raw, rating_avg: undefined });
-    expect(post.rating_avg).toBe(-1);
+  it("uses null for rating_avg when the post has no ratings", () => {
+    expect(postDTO({ ...raw, rating_avg: undefined }).rating_avg).toBeNull();
+    expect(postDTO({ ...raw, rating_avg: null }).rating_avg).toBeNull();
   });
 
-  it("defaults rating_avg to -1 when null", () => {
-    const post = postDTO({ ...raw, rating_avg: null });
-    expect(post.rating_avg).toBe(-1);
+  it("maps rating stats, author and stringifies the id", () => {
+    const post = postDTO({
+      ...raw,
+      id: 7,
+      rating_count: 2,
+      my_rating: 5,
+      author: { id: "U1", username: "admin.user", name: null },
+    });
+    expect(post.id).toBe("7");
+    expect(post.rating_count).toBe(2);
+    expect(post.my_rating).toBe(5);
+    expect(post.author?.username).toBe("admin.user");
+  });
+
+  it("defaults rating_count to 0 and my_rating to null", () => {
+    const post = postDTO(raw);
+    expect(post.rating_count).toBe(0);
+    expect(post.my_rating).toBeNull();
   });
 });

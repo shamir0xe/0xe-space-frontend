@@ -1,27 +1,37 @@
 import BaseAPI from "./base";
 
+/** An entry of the site's key/value store (about_me, cv, socials, ...). */
+export type KeyValueEntry = {
+  key: string;
+  value: string;
+  public: boolean;
+  updated_at: string;
+};
+
 export class GeneralAPI extends BaseAPI {
   static async getKey(key: string): Promise<string> {
-    try {
-      const response = await this.get("/general/get-key", { key: key });
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
-      return Promise.resolve(await response.json());
-    } catch (error: unknown) {
-      return Promise.reject(error);
-    }
+    const entry = await this.get<KeyValueEntry>(
+      `/kv/${encodeURIComponent(key)}`,
+    );
+    return entry.value;
   }
 
-  static async setKey(key: string, value: string): Promise<boolean> {
-    try {
-      const response = await this.post("/general/set-key", { key: key }, value);
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
-      return Promise.resolve(true);
-    } catch (error: unknown) {
-      return Promise.reject(error);
-    }
+  /** Creates or updates a key. Omitting isPublic keeps its current visibility. */
+  static async setKey(
+    key: string,
+    value: string,
+    isPublic?: boolean,
+  ): Promise<boolean> {
+    await this.put<KeyValueEntry>(`/kv/${encodeURIComponent(key)}`, {
+      value,
+      public: isPublic,
+    });
+    return true;
+  }
+
+  /** Admin only. */
+  static async listKeys(): Promise<KeyValueEntry[]> {
+    const res = await this.get<{ items: KeyValueEntry[] }>("/kv");
+    return res.items;
   }
 }
