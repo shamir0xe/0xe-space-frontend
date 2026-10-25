@@ -1,7 +1,6 @@
 import { ResendCodeChat } from "./resendCodeChat";
 
-const ResendCodeCMD = (...args: string[]): [JSX.Element, ResendCodeChat] => {
-  console.log(args);
+const ResendCodeCMD = (): [JSX.Element, ResendCodeChat] => {
   const resendCodeChat = new ResendCodeChat();
   return [resendCodeChat.renderHistory(), resendCodeChat];
 };

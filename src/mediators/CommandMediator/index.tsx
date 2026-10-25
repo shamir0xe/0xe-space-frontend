@@ -11,6 +11,8 @@ import SetKeyCMD from "@/commands/SetKeyCMD";
 import RegisterCMD from "@/commands/RegisterCMD";
 import ConfirmCodeCMD from "@/commands/ConfirmCodeCMD";
 import ResendCodeCMD from "@/commands/ResendCodeCMD";
+import ForgotPasswordCMD from "@/commands/ForgotPasswordCMD";
+import ResetPasswordCMD from "@/commands/ResetPasswordCMD";
 import { Chat } from "@/helpers/chat/Chat";
 import AboutMeCMD from "@/commands/AboutMeCMD";
 import LeetcodeCMD from "@/commands/LeetcodeCMD";
@@ -86,19 +88,25 @@ const CommandMediator = (
       [output, interactiveChat] = SetKeyCMD(setFocus, ...args);
       break;
     case CommandTypes.REGISTER:
-      [output, interactiveChat] = RegisterCMD(setUser, ...args);
+      [output, interactiveChat] = RegisterCMD(secretRef);
       break;
     case CommandTypes.CONFIRM_CODE:
       [output, interactiveChat] = ConfirmCodeCMD(setUser, ...args);
       break;
     case CommandTypes.RESEND_CODE:
-      [output, interactiveChat] = ResendCodeCMD(...args);
+      [output, interactiveChat] = ResendCodeCMD();
+      break;
+    case CommandTypes.FORGOT_PASSWORD:
+      [output, interactiveChat] = ForgotPasswordCMD();
+      break;
+    case CommandTypes.RESET_PASSWORD:
+      [output, interactiveChat] = ResetPasswordCMD(secretRef);
       break;
     case CommandTypes.LOGIN:
       [output, interactiveChat] = LoginCMD(setUser, secretRef, ...args);
       break;
     case CommandTypes.LOGOUT:
-      output = LogoutCMD(setUser, ...args);
+      output = LogoutCMD(setUser);
       break;
     case CommandTypes.WHOAMI:
       output = WhoAmICMD(getUser(), ...args);

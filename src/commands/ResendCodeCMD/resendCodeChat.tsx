@@ -1,48 +1,30 @@
 import { AuthAPI } from "@/facades/apiCall";
+import { errorMessage } from "@/facades/apiCall/base";
 import { Chat, ChatStates } from "@/helpers/chat/Chat";
 
 export class ResendCodeChat extends Chat {
-  username: string | null = null;
-  email: string | null = null;
-  history: JSX.Element[] = [<div>Enter your username:</div>];
-
-  constructor() {
-    super();
-  }
+  history: JSX.Element[] = [<div>Enter your email address:</div>];
 
   async recieve(line: string): Promise<JSX.Element> {
     line = line.trim();
-    console.log(`recieved ${line}`);
-    if (this.state == 0) {
-      // Username
-      if (line.length == 0) {
-        this.history.push(<div>Username couldn't be null</div>);
-        return this.renderHistory();
-      }
-      this.username = line;
-      this.state += 1;
-      this.history.push(<div>{this.username}</div>);
-      this.history.push(<div>Enter your email address:</div>);
-      return this.renderHistory();
-    } else if (this.state == 1) {
-      // Email
-      if (line.length == 0) {
-        this.history.push(<div>Email address couldn't be null</div>);
-        return this.renderHistory();
-      }
-      this.email = line;
-      try {
-        await AuthAPI.resendCode(this.username ?? "", this.email ?? "");
-        this.history.push(
-          <div>Successfully sent the code to your email address</div>,
-        );
-        this.state = ChatStates.SUCCESS;
-      } catch (error: any) {
-        this.history.push(<div>{String(error)}</div>);
-        this.state = ChatStates.FAILURE;
-      }
+    if (line.length == 0) {
+      this.history.push(<div>Email address couldn't be empty</div>);
       return this.renderHistory();
     }
-    return <div></div>;
+    this.history.push(<div>{line}</div>);
+    try {
+      await AuthAPI.resendCode(line);
+      this.state = ChatStates.SUCCESS;
+      this.history.push(
+        <div>
+          If the address is registered and not verified yet, a new code is on its
+          way. Then run <strong>confirm_code</strong>.
+        </div>,
+      );
+    } catch (error) {
+      this.state = ChatStates.FAILURE;
+      this.history.push(<div>{errorMessage(error)}</div>);
+    }
+    return this.renderHistory();
   }
 }

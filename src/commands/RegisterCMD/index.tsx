@@ -1,12 +1,9 @@
-import User from "@/models/user";
 import { RegisterChat } from "./registerChat";
 
 const RegisterCMD = (
-  setUser: (user: User) => void,
-  ...args: string[]
+  secretRef: React.MutableRefObject<boolean>,
 ): [JSX.Element, RegisterChat] => {
-  console.log(args);
-  const registerChat = new RegisterChat(setUser);
+  const registerChat = new RegisterChat(secretRef);
   return [registerChat.renderHistory(), registerChat];
 };
 

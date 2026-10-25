@@ -1,15 +1,14 @@
-import CookiesFacade from "@/facades/cookiesFacade";
 import { AuthAPI } from "@/facades/apiCall";
-import postLoginProcess from "@/orchestrators/postLoginProcess";
+import { errorMessage } from "@/facades/apiCall/base";
+import startSession from "@/orchestrators/startSession";
 import User from "@/models/user";
 import { Chat, ChatStates } from "@/helpers/chat/Chat";
 
 export class LoginChat extends Chat {
   setUser: (user: User) => void;
   secretRef: React.MutableRefObject<boolean>;
-  username: string | null = null;
-  password: string | null = null;
-  history: JSX.Element[] = [<div>Enter Username:</div>];
+  login: string | null = null;
+  history: JSX.Element[] = [<div>Enter username or email:</div>];
 
   constructor(
     setUser: (user: User) => void,
@@ -24,10 +23,10 @@ export class LoginChat extends Chat {
     line = line.trim();
     if (this.state == 0) {
       if (line.length == 0) {
-        this.history.push(<div>Username couldn't be null</div>);
+        this.history.push(<div>Username or email couldn't be empty</div>);
         return this.renderHistory();
       }
-      this.username = line;
+      this.login = line;
       this.state += 1;
       this.history.push(<div>{line}</div>);
       this.history.push(<div>Enter password:</div>);
@@ -35,27 +34,19 @@ export class LoginChat extends Chat {
       return this.renderHistory();
     } else if (this.state == 1) {
       if (line.length == 0) {
-        return <div>Password couldn't be null</div>;
+        this.history.push(<div>Password couldn't be empty</div>);
+        return this.renderHistory();
       }
-      this.password = line;
-      this.state += 1;
       this.secretRef.current = false;
-      if (this.username == null) {
-        this.history.push(<div>Invalid Username</div>);
-        return this.renderHistory();
-      }
-      const token = await AuthAPI.login(this.username, this.password);
-      if (token == null) {
+      try {
+        const session = await AuthAPI.login(this.login ?? "", line);
+        startSession(this.setUser, session);
+        this.state = ChatStates.SUCCESS;
+        this.history.push(<div>Successfully logged in</div>);
+      } catch (error) {
         this.state = ChatStates.FAILURE;
-        this.history.push(<div>Incorrect, try again</div>);
-        return this.renderHistory();
+        this.history.push(<div>{errorMessage(error)}</div>);
       }
-      this.state = ChatStates.SUCCESS;
-
-      CookiesFacade.saveToken(token);
-      postLoginProcess(this.setUser, token);
-
-      this.history.push(<div>Successfully logged in</div>);
       return this.renderHistory();
     }
     return <div></div>;

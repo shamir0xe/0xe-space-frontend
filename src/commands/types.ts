@@ -24,6 +24,8 @@ enum Commands {
   RELOAD = "reload",
   CONFIRM_CODE = "confirm_code",
   RESEND_CODE = "resend_code",
+  FORGOT_PASSWORD = "forgot_password",
+  RESET_PASSWORD = "reset_password",
 }
 
 export default Commands;
