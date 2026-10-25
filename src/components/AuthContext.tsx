@@ -1,6 +1,15 @@
 import createGuestUser from "@/actions/user/createGuestUser";
+import BaseAPI from "@/facades/apiCall/base";
 import User from "@/models/user";
-import { createContext, ReactNode, useContext, useRef, useState } from "react";
+import postLoginProcess from "@/orchestrators/postLoginProcess";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 export interface AuthContextType {
   user: User;
@@ -25,6 +34,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const getUser = (): User => {
     return user.current;
   };
+
+  // Restore the session on every page (terminal and blog), and fall back to a
+  // guest when the server rejects the stored token.
+  useEffect(() => {
+    BaseAPI.onSessionExpired = () => setUser(createGuestUser());
+    postLoginProcess(setUser).catch(() => {});
+    return () => {
+      BaseAPI.onSessionExpired = null;
+    };
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{ user: stateUser, setUser: setUser, getUser: getUser }}

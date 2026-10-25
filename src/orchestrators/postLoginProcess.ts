@@ -3,31 +3,25 @@ import CookiesFacade from "@/facades/cookiesFacade";
 import User from "@/models/user";
 
 /**
- * Attempts to retrieve the user from cookies and login using the token.
+ * Restores the session from the token cookie, if any, by fetching the user.
  * @param setUser - Function to update the user state.
- * @param token - Optional token string to use for login. If not provided, will read from cookies.
- * @returns A promise that resolves when login is complete.
+ * @param token - Optional token; read from the cookie when omitted.
  */
 const postLoginProcess = async (
   setUser: (user: User) => void,
   token: string | null = null,
 ): Promise<void> => {
-  // Try to retrieve the token if not provided
+  token = token ?? CookiesFacade.readToken();
   if (!token) {
-    token = CookiesFacade.readToken();
-  }
-  if (!token) {
-    // No token found, nothing to do
     return;
   }
   try {
-    // Fetch user info from API
-    const fetchedUser = await UserAPI.userInfo();
-    fetchedUser.token = token;
-    setUser(fetchedUser);
-    return Promise.resolve()
+    const fetchedUser = await UserAPI.me();
+    setUser({ ...fetchedUser, token });
   } catch (error) {
-    return Promise.reject(`Error occurred while trying to login the user: ${error}`)
+    return Promise.reject(
+      `Error occurred while trying to login the user: ${error}`,
+    );
   }
 };
 

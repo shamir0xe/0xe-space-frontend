@@ -5,7 +5,6 @@ import CommandMediator from "@/mediators/CommandMediator";
 import TypeSetterMediator from "@/mediators/TypeSetterMediator";
 import { useEffect, useRef, useState } from "react";
 import "./home.css";
-import postLoginProcess from "@/orchestrators/postLoginProcess";
 import { useAuth } from "@/components/AuthContext";
 import { Chat } from "@/helpers/chat/Chat";
 import { useCursor } from "@/components/CursorContext";
@@ -105,8 +104,6 @@ const Home = () => {
         },
       },
     );
-
-    postLoginProcess(setUser);
 
     TypeSetterMediator.initialize(virtualKeyPress);
     // TODO:, remove this
